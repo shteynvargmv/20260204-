@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- overlay menu start -->
+<div class="overlay-menu" th:fragment="overlaymenu">
+    <div class="close">
+        <div class="xb-close"></div>
+    </div>
+    <div class="row overlay-wrap">
+        <div class="col-xl-8 col-md-7 left-area">
+            <nav>
+                <ul>
+                    <li class="menu-item">
+                        <a th:href="@{/invest/home}">Главная</a>
+                    </li>
+                    <li class="menu-item-has-children">
+                        <a th:href="@{/invest/catalog/all}">Каталог</a>
+                        <ul class="sub">
+                            <li><a th:href="@{/invest/catalog/all}"><span>Все инструменты</span></a></li>
+                            <li><a th:href="@{/invest/catalog/share}"><span>Акции</span></a></li>
+                            <li><a th:href="@{/invest/catalog/bond}"><span>Облигации</span></a></li>
+                            <li><a th:href="@{/invest/catalog/currency}"><span>Валюта</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <a th:href="@{/invest/catalog/all}">Избранное</a>
+                        <!--                            <ul class="sub">-->
+                        <!--                                <li><a href="project.html"><span>Portfolio</span></a></li>-->
+                        <!--                                <li><a href="project-single.html"><span>Portfolio Details</span></a></li>-->
+                        <!--                            </ul>-->
+                    </li>
+                    <li class="menu-item"><a th:href="@{/invest/contact}">Контакты</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-xl-4 col-md-5 right-area">
+            <ul>
+                <li><span class="title"></span></li>
+                <li><p>Разработчик <br> Штейнварг М.В.</p></li>
+                <li><span class="title"></span></li>
+                <li><p>Россия <br> г.Пермь</p></li>
+            </ul>
+            <ul>
+                <li><span class="title">Академия "ТОП"</span></li>
+                <li>
+                    <ul class="social-links">
+                        <li><a target="_blank">ул. Швецова, 39</a></li>
+                        <li><a target="_blank">офис 321</a></li>
+                        <li><a target="_blank">+7(342)215-07-56</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

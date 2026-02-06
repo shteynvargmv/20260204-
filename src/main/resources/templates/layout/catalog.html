@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<main th:fragment="main">
+
+    <!-- shop start -->
+    <section class="shop pt-115 pb-130">
+        <div class="container">
+            <div class="row mt-none-60">
+                <div class="col-lg-8 mt-60">
+                    <div class="woocommerce-content-wrap">
+                        <div class="woocommerce-toolbar-top ul_li_between mt-none-15">
+                            <p class="woocommerce-result-count mt-15">
+                                <a th:text="${on_page * (pageNum - 1) + 1 } + '-' +
+                                        ${pageNum == pagesCount ? instrumentsCount : on_page * pageNum } + ' из ' + ${instrumentsCount}">
+                                </a>
+                            </p>
+                            <div class="woocommerce-toolbar-top-right ul_li">
+                                <form class="woocommerce-ordering mt-15" method="get"
+                                      th:action="@{/invest/catalog/{type}(type=${type})}">
+
+                                    <select name="sort" class="orderby" onchange="this.form.submit()"
+                                            style="text-align: right;">
+                                        <option value="none"
+                                                th:selected="${sort == 'none' ||
+                                                (param.sort != null && param.sort[0] == 'none')}">
+                                            Сортировка
+                                        </option>
+                                        <option value="name_asc"
+                                                th:selected="${sort == 'name_asc' ||
+                                                (param.sort != null && param.sort[0] == 'name_asc')}">
+                                            Название: по возрастанию
+                                        </option>
+                                        <option value="name_desc"
+                                                th:selected="${sort == 'name_desc' ||
+                                                (param.sort != null && param.sort[0] == 'name_desc')}">
+                                            <a class="justify-content-end">Название: по убыванию</a>
+                                        </option>
+                                        <option value="nominalUnits_nominalNano_asc"
+                                                th:selected="${sort == 'nominalUnits_nominalNano_asc' ||
+                                                (param.sort != null && param.sort[0] == 'nominalUnits_nominalNano_asc')}">
+                                            Цена: по возрастанию
+                                        </option>
+                                        <option value="nominalUnits_nominalNano_desc"
+                                                th:selected="${sort == 'nominalUnits_nominalNano_desc' || (param.sort != null && param.sort[0] == 'nominalUnits_nominalNano_desc')}">
+                                            Цена: по убыванию
+                                        </option>
+                                    </select>
+
+                                    <input type="hidden" name="type" th:value="${type}">
+                                    <input type="hidden" name="page" th:value="${pageNum}">
+
+                                    <noscript>
+                                        <button type="submit" class="button">Применить</button>
+                                    </noscript>
+                                </form>
+                            </div>
+<!--                            <div class="woocommerce-toolbar-top-right ul_li">-->
+<!--                                <form class="woocommerce-ordering mt-15" method="get">-->
+<!--                                    <form name="orderby" class="orderby"-->
+<!--                                            th:action="@{/invest/catalog/{type}(type=${type}, page=${pageNum})}">-->
+<!--                                        <select name="sort" class="orderby" onchange="this.form.submit()">-->
+<!--                                        <option value="menu_order" selected="selected">Сортировка</option>-->
+<!--                                        <option value="popularity">Сортировка по названию: по возрастанию</option>-->
+<!--                                        <option value="popularity">Сортировка по названию: по убыванию</option>-->
+<!--                                        <option value="rating">Сортировка по цене: по возрастанию</option>-->
+<!--                                        <option value="price-desc">Сортировка по цене: по убыванию</option>-->
+<!--                                    </select>-->
+<!--                                    <input type="hidden" name="post_type" value="product">-->
+<!--                                </form>-->
+<!--                            </div>-->
+                        </div>
+                        <div class="woocommerce-content-inner">
+                            <div class="products" th:if="${instruments!=null and !instruments.isEmpty()}">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 col-sm-6 col-12" th:each="instrument : ${instruments}"
+                                         th:with="brand=${instrument.brand}">
+                                        <div class="product">
+                                            <div class="product--img">
+                                                <a th:if="${brand != null}"
+                                                        th:href="@{/invest/shop-single(id=${instrument.uid})}">
+                                                    <img th:src="@{'//invest-brands.cdn-tinkoff.ru/' +
+                                                         ${brand.getLogo()} + 'x640' + ${brand.getLogoExt()}}"
+                                                         alt=""
+                                                         onerror="this.onerror=null; this.src='/img/shop/noLogo.jpg';">
+                                                </a>
+                                                <a th:unless="${brand != null}"
+                                                   th:href="@{/invest/shop-single(id=${instrument.uid})}">
+                                                    <img th:src="@{/img/shop/noLogo.jpg}"
+                                                         alt="">
+                                                </a>
+                                                <div class="product--btn">
+                                                    <a class="xb-btn" href="shop-single.html"><i
+                                                            class="far fa-shopping-bag"></i>В избранное</a>
+                                                </div>
+                                                <div class="product--holder">
+                                                    <h3 class="product--title">
+                                                        <a th:href="@{/invest/shop-single(id=${instrument.uid})}"
+                                                           th:text="${instrument.name}"></a>
+                                                    </h3>
+                                                    <h3 class="product--title fs-6 text-secondary">
+                                                        <a th:href="@{/invest/shop-single(id=${instrument.uid})}"
+                                                           th:text="${instrument.ticker}"></a>
+                                                    </h3>
+                                                    <div class="product--price">
+                                                        <span th:text="${instrument.getPriceString()}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--                                        &lt;!&ndash; Если бренд отсутствует &ndash;&gt;-->
+                                            <!--                                        <div class="product" th:unless="${brand != null}">-->
+                                            <!--                                            <div class="product&#45;&#45;img">-->
+                                            <!--                                                <img src="/img/placeholder.png" th:alt="${instrument.name}">-->
+                                            <!--                                            </div>-->
+                                            <!--                                            <div class="product&#45;&#45;holder">-->
+                                            <!--                                                <h3 class="product&#45;&#45;title" th:text="${instrument.name}"></h3>-->
+                                            <!--                                                <div class="product&#45;&#45;price">-->
+                                            <!--                                                    <span th:text="${instrument.getPriceString()}"></span>-->
+                                            <!--                                                </div>-->
+                                            <!--                                            </div>-->
+                                            <!--                                        </div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pagination_wrap pt-20">
+                        <div th:if="${pagesCount > 0}">
+                            <ul>
+                                <!-- Назад -->
+                                <li th:classappend="${pageNum == 1} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/invest/catalog/{type}(type=${type}, page=${pageNum - 1})}">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+
+                                <!-- Первая страница -->
+                                <li th:if="${pageNum > 2}">
+                                    <a class="page-link"
+                                       th:href="@{/invest/catalog/{type}(type=${type}, page=1)}">
+                                        1
+                                    </a>
+                                </li>
+                                <li th:if="${pageNum > 3}" class="disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+
+                                <!-- Страница перед текущей -->
+                                <li th:if="${pageNum > 1}">
+                                    <a class="page-link"
+                                       th:href="@{/invest/catalog/{type}(type=${type}, page=${pageNum - 1})}"
+                                       th:text="${pageNum - 1}">
+                                    </a>
+                                </li>
+
+                                <!-- Текущая страница -->
+                                <li>
+                                    <a class="page-link current_page"
+                                       th:href="@{/invest/catalog/{type}(type=${type}, page=${pageNum})}"
+                                       th:text="${pageNum}">
+                                    </a>
+                                </li>
+
+                                <!-- Страница после текущей -->
+                                <li th:if="${pageNum < pagesCount}">
+                                    <a class="page-link"
+                                       th:href="@{/invest/catalog/{type}(type=${type}, page=${pageNum + 1})}"
+                                       th:text="${pageNum + 1}">
+                                    </a>
+                                </li>
+
+                                <!-- Многоточие -->
+                                <li th:if="${pageNum < pagesCount - 2}" class="disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+
+                                <!-- Последняя страница -->
+                                <li th:if="${pageNum < pagesCount - 1}">
+                                    <a class="page-link"
+                                       th:href="@{/invest/catalog/{type}(type=${type}, page=${pagesCount})}"
+                                       th:text="${pagesCount}">
+                                    </a>
+                                </li>
+
+                                <!-- Вперед -->
+                                <li th:classappend="${pageNum == pagesCount} ? 'disabled' : ''">
+                                    <a class="page-link"
+                                       th:href="@{/invest/catalog/{type}(type=${type}, page=${pageNum + 1})}">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!--                        <div th:if="@{pagesCount != 0}">-->
+                        <!--                        <ul>-->
+                        <!--                            <li class="pagination-next" th:classappend="${pageNum == 1} ? 'disabled'">-->
+                        <!--                                <a class="page-link" th:href="@{/invest/catalog/{type}(type=${type}, page=${pageNum - 1})}">-->
+                        <!--                                    <i class="fas fa-chevron-left"></i>-->
+                        <!--                                </a>-->
+                        <!--                            </li>-->
+                        <!--                            <li th:each="page : ${#numbers.sequence(1, pagesCount)}">-->
+                        <!--                                <a th:classappend="${page == pageNum} ? 'current_page' : ''"-->
+                        <!--                                   th:href="@{/invest/catalog/{type}(type=${type}, page=${page})}"-->
+                        <!--                                   th:text="${page}">-->
+                        <!--                                </a>-->
+                        <!--                            </li>-->
+                        <!--                            <li class="pagination-next" th:classappend="${pageNum == pagesCount} ? 'disabled'">-->
+                        <!--                                <a class="page-link" th:href="@{/invest/catalog/{type}(type=${type}, page=${pageNum + 1})}">-->
+                        <!--                                    <i class="fas fa-chevron-right"></i>-->
+                        <!--                                </a>-->
+                        <!--                            </li>-->
+                        <!--                        </ul>-->
+                        <!--                        </div>-->
+                    </div>
+                </div>
+                <div class="col-lg-4 mt-60">
+                    <div class="shop-sidebar sidebar-area mt-none-40">
+                        <div class="widget mt-40">
+                            <h2 class="widget__title">Search</h2>
+                            <div class="widget__inner">
+                                <form class="widget__search" action="shop.html#">
+                                    <input type="text" placeholder="Search...">
+                                    <button><i class="far fa-search"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="widget mt-40">
+                            <h2 class="widget__title">
+                                <span>По отраслям</span>
+                            </h2>
+                            <div class="widget__inner">
+                                <ul class="widget__category list-unstyled">
+                                    <li><a th:href="@{/invest/catalog}">Accessories <span>(22)</span></a></li>
+                                    <li><a th:href="@{/invest/catalog}">Business <span>(30)</span></a></li>
+                                    <li><a th:href="@{/invest/catalog}">Digital gadgets <span>(24)</span></a></li>
+                                    <li><a th:href="@{/invest/catalog}">Technology <span>(15)</span></a></li>
+                                    <li><a th:href="@{/invest/catalog}">Law <span>(10)</span></a></li>
+                                    <li><a th:href="@{/invest/catalog}">rooms <span>(12)</span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="widget widget_price_filter mt-40">
+                            <h2 class="widget__title">Filter By Price</h2>
+                            <div class="widget__inner">
+                                <div class="filter-price">
+                                    <form>
+                                        <div id="slider-range"></div>
+                                        <p>Price : <input type="text" id="amount"></p>
+                                        <button>filter</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget mt-40">
+                            <h2 class="widget__title">
+                                <span>Tags</span>
+                            </h2>
+                            <div class="widget__inner">
+                                <div class="tagcloud">
+                                    <a th:href="@{/invest/catalog}">Design</a>
+                                    <a th:href="@{/invest/catalog}">Development</a>
+                                    <a th:href="@{/invest/catalog}">UI/UX</a>
+                                    <a th:href="@{/invest/catalog}">Startup</a>
+                                    <a th:href="@{/invest/catalog}">Strategu</a>
+                                    <a th:href="@{/invest/catalog}">Management</a>
+                                    <a th:href="@{/invest/catalog}">Optimization</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- shop end -->
+
+</main>
+<!-- main area end  -->
+
+<!--    &lt;!&ndash; footer start &ndash;&gt;-->
+<!--    <div th:if="${showFooter == true}">-->
+<!--        <footer th:replace="~{layout/footer :: footer}"></footer>-->
+<!--    </div>-->
+<!--    &lt;!&ndash; footer start &ndash;&gt;-->
+
+<!--</div>-->
+
+<!--&lt;!&ndash; jquery include &ndash;&gt;-->
+<!--<script th:src="@{/js/jquery-3.7.1.min.js}"></script>-->
+<!--<script th:src="@{/js/bootstrap.bundle.min.js}"></script>-->
+<!--<script th:src="@{/js/swiper.min.js}"></script>-->
+<!--<script th:src="@{/js/wow.min.js}"></script>-->
+<!--<script th:src="@{/js/gsap.min.js}"></script>-->
+<!--<script th:src="@{/js/ScrollSmoother.min.js}"></script>-->
+<!--<script th:src="@{/js/ScrollTrigger.min.js}"></script>-->
+<!--<script th:src="@{/js/SplitText.min.js}"></script>-->
+<!--<script th:src="@{/js/appear.js}"></script>-->
+<!--<script th:src="@{/js/odometer.min.js}"></script>-->
+<!--<script th:src="@{/js/imagesloaded.pkgd.min.js}"></script>-->
+<!--<script th:src="@{/js/jquery.marquee.min.js}"></script>-->
+<!--<script th:src="@{/js/isotope.pkgd.min.js}"></script>-->
+<!--<script th:src="@{/js/jquery.magnific-popup.min.js}"></script>-->
+<!--<script th:src="@{/js/touchspin.js}"></script>-->
+<!--<script th:src="@{/js/jquery-ui.min.js}"></script>-->
+<!--<script th:src="@{/js/imageRevealHover.js}"></script>-->
+<!--<script th:src="@{/js/TweenMax.min.js}"></script>-->
+<!--<script th:src="@{/js/easing.min.js}"></script>-->
+<!--<script th:src="@{/js/scrollspy.js}"></script>-->
+<!--<script th:src="@{/js/ukiyo.min.js}"></script>-->
+<!--<script th:src="@{/js/lenis.js}"></script>-->
+<!--<script th:src="@{/js/matter.js}"></script>-->
+<!--<script th:src="@{/js/throwable.js}"></script>-->
+<!--<script th:src="@{/js/main.js}"></script>-->
+
+
+</body>
+
+</html>

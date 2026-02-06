@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer class="dm-footer pos-rel" th:fragment="footer">
+    <div class="dm-footer-line pt-10 pb-10">
+        <div class="container">
+            <div class="row mt-none-40">
+                <div class="col-lg-4 col-md-6 footer-col mt-40">
+                    <div class="footer-widget">
+                        <div class="footer-logo mb-30">
+                            <a th:href="@{/invest/home}"><img th:src="@{/img/logo/logo.jpg}" width="50" alt=""></a>
+                        </div>
+                        <ul class="social-list ul_li mt-40">
+                            <li><a th:href="@{https://t.me/+79127895570}"><i class="fab fa-telegram"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="footer-copyright text-center">
+            Штейнварг Марина Владимировна parfen-marina@yandex.ru
+        </div>
+    </div>
+    <div class="dm-footer-bg_icon">
+        <img th:src="@{/img/digital-marketing/icon/dm-footer.png}" alt="">
+    </div>
+</footer>
+</body>
+</html>

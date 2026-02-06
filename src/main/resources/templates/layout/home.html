@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<main th:fragment="main">
+    <!-- hero section start  -->
+    <section class="hero-digital-marketing pos-rel">
+        <div class="dm-hero-img wow skewIn" data-wow-delay="250ms">
+            <img th:src="@{/img/digital-marketing/hero/hero-05.jpg}" alt="">
+        </div>
+        <div class="container">
+            <div class="dm-hero-content pos-rel">
+                <div class="xb-item--dm-image wow skewIn" data-wow-duration=".7s">
+                    <img th:src="@{/img/digital-marketing/hero/hero-04.jpg}" alt="">
+                </div>
+                <h1 class="xb-item--title wow fadeInUp">Инвестиции <br> <span class="sp-two">Для</span> <span class="sp-one">Всех</span></h1>
+            </div>
+        </div>
+    </section>
+    <!-- hero section end  -->
+
+    <!-- dm-brand start -->
+
+    <!-- dm-brand end -->
+
+    <!-- service start -->
+
+    <!-- service end -->
+
+    <!-- about start  -->
+    <section class="about pos-rel">
+        <div class="container">
+            <div class="section-title section-title--dm mb-50">
+                <span class="sub-title mb-45 wow fadeInRight" data-wow-duration=".7s">О проекте</span>
+            </div>
+            <div class="section-title">
+                <h3 class="title title-dm"><span>Присоединяйтесь к успешным инвесторам, </span> <span>использующим </span> <span class="sp-one">InvestMate</span></h3>
+            </div>
+        </div>
+        <div class="dm-about--image bg_img" ></div>
+    </section>
+    <!-- about end  -->
+
+    <!--  marquee start -->
+    <section class="marquee-two pt-120">
+        <div class="dm-marquee db-marquee marquee-left">
+            <div class="marquee-item">ИНВЕСТИЦИИ</div>
+            <div class="marquee-item">АНАЛИЗ РЫНКА</div>
+            <div class="marquee-item">ФИНАНСОВАЯ ГРАМОТНОСТЬ</div>
+            <div class="marquee-item">УСПЕХ</div>
+            <div class="marquee-item">ДОХОДНОСТЬ</div>
+            <div class="marquee-item">УПРАВЛЕНИЕ РИСКАМИ</div>
+            <div class="marquee-item">АКЦИИ И ОБЛИГАЦИИ</div>
+            <div class="marquee-item">ФИНАНСОВАЯ СВОБОДА</div>
+            <div class="marquee-item">ИНВЕСТИЦИИ</div>
+            <div class="marquee-item">АНАЛИЗ РЫНКА</div>
+        </div>
+    </section>
+    <!--  marquee end -->
+
+
+    <!-- testimonial start -->
+    <section class="testimonial pt-60">
+        <div class="container">
+            <div class="section-title section-title--dm mb-30">
+                <span class="sub-title mb-45 wow fadeInRight" data-wow-duration=".7s">отзывы</span>
+                <div class="ul_li_between">
+                    <h3 class="title mb-20 wow skewIn">Наши клиенты <br> <span>пишут</span></h3>
+                    <p class="content dm-por-content mb-20 wow fadeInRight mt-50" data-wow-delay="250ms" data-wow-duration=".7s">Посмотрите, как InvestMate помог нашим пользователям достичь значимых результатов.</p>
+                </div>
+            </div>
+            <div class="dm-testimonial-slider swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <span class="dm-testimonial--quote"><img th:src="@{/img/digital-marketing/icon/dm-qu.png}" alt=""></span>
+                        <p class="dm-testimonial--content">InvestMate — надежный партнер на пути к финансовой независимости.</p>
+                        <div class="dm-testimonial--avater">
+                            <h2 class="name">Баффетт У.</h2>
+                            <h3 class="title">Предприниматель</h3>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <span class="dm-testimonial--quote"><img th:src="@{/img/digital-marketing/icon/dm-qu.png}" alt=""></span>
+                        <p class="dm-testimonial--content">Сервис предоставляет продвинутый анализ облигаций, акций и валют, используя актуальные рыночные данные и алгоритмические модели. Принимайте обоснованные финансовые решения с уверенностью, экономя время на анализе.</p>
+                        <div class="dm-testimonial--avater">
+                            <h2 class="name">Петров И.</h2>
+                            <h3 class="title">Начинающий инвестор</h3>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <span class="dm-testimonial--quote"><img th:src="@{/img/digital-marketing/icon/dm-qu.png}" alt=""></span>
+                        <p class="dm-testimonial--content">Спасибо учителям и Академии "Топ" за методику обучения, позволившую отправиться в путешествие в мир Java-разработки. Благодаря их профессионализму, я смогла создать этот сайт.</p>
+                        <div class="dm-testimonial--avater">
+                            <h2 class="name">Штейнварг М.</h2>
+                            <h3 class="title">Разработчик</h3>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <span class="dm-testimonial--quote"><img th:src="@{/img/digital-marketing/icon/dm-qu.png}" alt=""></span>
+                        <p class="dm-testimonial--content">Выбирайте оптимальные инвестиционные инструменты под ваши цели и риск-профиль.</p>
+                        <div class="dm-testimonial--avater">
+                            <h2 class="name">Иванов П.</h2>
+                            <h3 class="title">Финаносовый аналитик</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </section>
+    <!-- testimonial end -->
+
+    <!-- instragram start -->
+    <section class="instragram pt-130 pb-130">
+        <div class="instragram-slider">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="instragram-img pos-rel">
+                        <img th:src="@{/img/digital-marketing/instragram/ins01.jpg}" alt="">
+                        <a class="ins_link"><img th:src="@{/img/digital-marketing/icon/ins01.svg}" alt=""></a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="instragram-img pos-rel">
+                        <img th:src="@{/img/digital-marketing/instragram/ins02.jpg}" alt="">
+                        <a class="ins_link"><img th:src="@{/img/digital-marketing/icon/ins01.svg}" alt=""></a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="instragram-img pos-rel">
+                        <img th:src="@{/img/digital-marketing/instragram/ins03.jpg}" alt="">
+                        <a class="ins_link"><img th:src="@{/img/digital-marketing/icon/ins01.svg}" alt=""></a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="instragram-img pos-rel">
+                        <img th:src="@{/img/digital-marketing/instragram/ins04.jpg}" alt="">
+                        <a class="ins_link"><img th:src="@{/img/digital-marketing/icon/ins01.svg}" alt=""></a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="instragram-img pos-rel">
+                        <img th:src="@{/img/digital-marketing/instragram/ins05.jpg}" alt="">
+                        <a class="ins_link"><img th:src="@{/img/digital-marketing/icon/ins01.svg}" alt=""></a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="instragram-img pos-rel">
+                        <img th:src="@{/img/digital-marketing/instragram/ins06.jpg}" alt="">
+                        <a class="ins_link"><img th:src="@{/img/digital-marketing/icon/ins01.svg}" alt=""></a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="instragram-img pos-rel">
+                        <img th:src="@{/img/digital-marketing/instragram/ins03.jpg}" alt="">
+                        <a class="ins_link"><img th:src="@{/img/digital-marketing/icon/ins01.svg}" alt=""></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- istragram end -->
+
+</main>
+</body>
+</html>

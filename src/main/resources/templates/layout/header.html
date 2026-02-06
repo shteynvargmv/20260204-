@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- header start -->
+    <header id="xb-header-area" class="header-area header-style-four is-sticky" th:fragment="header">
+        <div class="xb-header">
+            <div class="container mxw_1785">
+                <div class="header__wrap ul_li_between">
+                    <div class="header-logo">
+                        <a th:href="@{/invest/home}"><img th:src="@{/img/logo/logo.jpg}" width="50" alt=""><span
+                                style="color:white;letter-spacing: 2px;" class="ps-2">InvestMate</span></a>
+                    </div>
+                    <div class="main-menu__wrap ul_li navbar navbar-expand-lg">
+                        <nav class="main-menu collapse navbar-collapse">
+                            <ul>
+                                <li class="menu-item-has-children active">
+                                    <a th:href="@{/invest/home}"><span>ГЛАВНАЯ</span></a>
+                                </li>
+                                <li class="menu-item-has-children">
+                                    <a th:href="@{/invest/catalog/all}"><span></span>КАТАЛОГ</a>
+                                    <ul class="submenu">
+                                        <li><a th:href="@{/invest/catalog/all}"><span>Все инструменты</span></a></li>
+                                        <li><a th:href="@{/invest/catalog/share}"><span>Акции</span></a>
+                                        </li>
+                                        <li><a th:href="@{/invest/catalog/bond}"><span>Облигации</span></a>
+                                        </li>
+                                        <li><a th:href="@{/invest/catalog/currency}"><span>Валюта</span></a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item-has-children">
+                                    <a th:href="@{/index.html}"><span>ИЗБРАННОЕ</span></a>
+                                    <!--                                    <ul class="submenu">-->
+                                    <!--                                        <li><a th:href="@{/project.html}"><span>Portfolio</span></a></li>-->
+                                    <!--                                        <li><a th:href="@{/project-single.html}"><span>Portfolio Details</span></a></li>-->
+                                    <!--                                    </ul>-->
+                                </li>
+                                <li class="menu-item-has-children">
+                                    <a th:href="@{/invest/contact}"><span>КОНТАКТЫ</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <div class="xb-header-wrap">
+                            <div class="xb-header-menu">
+                                <div class="xb-header-menu-scroll">
+                                    <div class="xb-menu-close xb-hide-xl xb-close"></div>
+                                    <div class="xb-logo-mobile xb-hide-xl">
+                                        <a th:href="@{/index.html}" rel="home"><img th:src="@{/img/logo/logo.jpg}"
+                                                                                    width="50"
+                                                                                    alt=""></a></div>
+                                    <nav class="xb-header-nav">
+                                        <ul class="xb-menu-primary clearfix">
+                                            <li class="menu-item">
+                                                <a th:href="@{/invest/home}"><span>Главная</span></a>
+                                            </li>
+                                            <li class="menu-item menu-item-has-children">
+                                                <a th:href="@{/invest/catalog/all}"><span>Кaталог</span></a>
+                                                <ul class="sub-menu">
+                                                    <li><a th:href="@{/invest/catalog/all}"><span>Все инструменты</span></a>
+                                                    </li>
+                                                    <li><a th:href="@{/invest/catalog/share}"><span>Акции</span></a>
+                                                    </li>
+                                                    <li><a th:href="@{/invest/catalog/bond}"><span>Облигации</span></a>
+                                                    </li>
+                                                    <li><a th:href="@{/invest/catalog/currency}"><span>Валюта</span></a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="menu-item">
+                                                <a th:href="@{/invest/portfolio}"><span>Избранное</span></a>
+                                                <!--                                                <ul class="sub-menu">-->
+                                                <!--                                                    <li><a th:href="@{/project.html}"><span>Portfolio</span></a></li>-->
+                                                <!--                                                    <li><a th:href="@{/project-single.html}"><span>Portfolio Details</span></a></li>-->
+                                                <!--                                                </ul>-->
+                                            </li>
+                                            <li class="menu-item">
+                                                <a th:href="@{/invest/contact}"><span>Контакты</span></a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            <div class="xb-header-menu-backdrop"></div>
+                        </div>
+                    </div>
+                    <div class="ul_li">
+                        <div class="xb-header_btn d-none d-lg-block">
+                            <a th:href="@{/invest/sign-in}">ВХОД</a>
+                        </div>
+                        <div class="side-menu-4 d-none d-lg-block">
+                            <a href="javascript:void(0);" class="burger-menu">
+                                <img th:src="@{/img/digital-marketing/icon/menu01.png}" alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="header-bar-mobile side-menu d-lg-none">
+                        <a th:attr="href='javascript:void(0);'" class="xb-nav-mobile">
+                            <img th:src="@{/img/digital-marketing/icon/menu01.png}" alt=""></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </header>
+    <!-- header end -->
+
+</body>
+</html>
