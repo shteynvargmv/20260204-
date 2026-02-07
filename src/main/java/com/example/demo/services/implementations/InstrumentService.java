@@ -2,6 +2,8 @@ package com.example.demo.services.implementations;
 
 import com.example.demo.controller.HomeController;
 import com.example.demo.dto.InstrumentDto;
+import com.example.demo.dto.LastPriceDto;
+import com.example.demo.dto.QuotationDto;
 import com.example.demo.entity.*;
 import com.example.demo.repository.repository.InstrumentRepository;
 import com.example.demo.repository.repository.BondRepository;
@@ -49,7 +51,7 @@ public class InstrumentService implements DBService {
     @Override
     public Page<Instrument> findAll(int page, Sort sort) {
         Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
-        return instrumentRepository.findAll(pageable);
+        return instrumentRepository.findByBondIsNotNullOrShareIsNotNullOrCurrencyIsNotNull(pageable);
     }
 
     @Override
@@ -76,7 +78,7 @@ public class InstrumentService implements DBService {
     }
 
     @Override
-    public Instrument dtoToEntity(InstrumentDto dto) {
+    public Instrument dtoToEntity(InstrumentDto dto, List<LastPriceDto> prices) {
         Instrument instrument = new Instrument();
         instrument.setUid(dto.getUid());
         instrument.setAssetUid(dto.getAssetUid());
@@ -96,6 +98,15 @@ public class InstrumentService implements DBService {
         instrument.setNominalCurrency(dto.getNominal().getCurrency());
         instrument.setNominalUnits(dto.getNominal().getUnits());
         instrument.setNominalNano(dto.getNominal().getNano());
+        QuotationDto price = prices.stream()
+                .filter(p -> p.getInstrumentUid().equals(dto.getUid()))
+                .findFirst()
+                .map(LastPriceDto::getPrice)
+                .orElse(null);
+        if (price != null){
+            instrument.setLastPriceUnits(Integer.parseInt(price.getUnits()));
+            instrument.setLastPriceNano(price.getNano());
+        }
         Brand brand = new Brand();
         brand.setLogoName(dto.getBrand().getLogoName());
         brand.setLogoBaseColor(dto.getBrand().getLogoBaseColor());

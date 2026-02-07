@@ -1,11 +1,15 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.InstrumentsResponse;
+import com.example.demo.dto.LastPricesRequest;
+import com.example.demo.dto.LastPricesResponse;
 import com.example.demo.services.BrokerApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/invest")
@@ -27,5 +31,8 @@ public class ApiController {
     public ResponseEntity<InstrumentsResponse> getAllCurrencies() {
         return tbankApiService.getAllCurrencies();
     }
-
+    @PostMapping("/prices/last")
+    public ResponseEntity<LastPricesResponse> getLastPrices(@RequestBody List<String> uids) {
+        return tbankApiService.getLastPrices(uids);
+    }
 }

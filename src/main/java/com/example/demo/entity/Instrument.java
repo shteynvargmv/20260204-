@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.text.SimpleDateFormat;
 
 @Entity
 public class Instrument {
@@ -34,6 +35,9 @@ public class Instrument {
     private int nominalUnits; // целая часть
     private int nominalNano; //представления дробной части (копеек * 1_000_000_000)
     private Date updateDate;
+
+    private int lastPriceUnits; // целая часть
+    private int lastPriceNano; //представления дробной части (копеек * 1_000_000_000)
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "brand_id", referencedColumnName = "id")
@@ -231,6 +235,22 @@ public class Instrument {
         return forQualInvestorFlag;
     }
 
+    public int getLastPriceUnits() {
+        return lastPriceUnits;
+    }
+
+    public int getLastPriceNano() {
+        return lastPriceNano;
+    }
+
+    public void setLastPriceUnits(int lastPriceUnits) {
+        this.lastPriceUnits = lastPriceUnits;
+    }
+
+    public void setLastPriceNano(int lastPriceNano) {
+        this.lastPriceNano = lastPriceNano;
+    }
+
     public String getPositionUid() {
         return positionUid;
     }
@@ -258,6 +278,17 @@ public class Instrument {
     @Transient
     private String priceString;
 
+    @Transient
+    private String updateDateString;
+
+    public String getUpdateDateString() {
+        return updateDateString;
+    }
+
+    public void setUpdateDateString(String updateDateString) {
+        this.updateDateString = updateDateString;
+    }
+
     public String getPriceString() {
         return priceString;
     }
@@ -267,18 +298,25 @@ public class Instrument {
     }
 
     @PostLoad
-    private void formPriceString() {
+    private void formString() {
         if (nominalCurrency == null || nominalCurrency.isEmpty()) {
             priceString = "";
         }
 
-        BigDecimal units = new BigDecimal(nominalUnits);
-        BigDecimal nano = new BigDecimal(nominalNano)
-                .divide(new BigDecimal("1000000000"), 9, RoundingMode.HALF_UP);
+        int units = lastPriceUnits;
+        int nano = lastPriceNano;
+        if ( this.bond != null ) {
+            units *= 10;
+            nano *= 10;
+        }
 
-        BigDecimal total = units.add(nano);
+        BigDecimal total = new BigDecimal(units).add(
+                new BigDecimal(nano).divide(new BigDecimal("1000000000")))
+                        .setScale(3, RoundingMode.HALF_UP);
 
-        priceString = total.stripTrailingZeros().toPlainString() + " " + nominalCurrency;
+        priceString = total + " " + nominalCurrency.toUpperCase();
+        updateDateString = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(updateDate);
     }
+
 
 }

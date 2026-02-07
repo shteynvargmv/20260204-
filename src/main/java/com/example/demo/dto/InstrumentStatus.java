@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum InstrumentStatus {
 
-    // Значение из JSON
     INSTRUMENT_STATUS_UNSPECIFIED("INSTRUMENT_STATUS_UNSPECIFIED"),
-
-    // Возможные дополнительные значения (добавьте по необходимости)
     INSTRUMENT_STATUS_BASE("INSTRUMENT_STATUS_BASE"),
     INSTRUMENT_STATUS_ALL("INSTRUMENT_STATUS_ALL");
 

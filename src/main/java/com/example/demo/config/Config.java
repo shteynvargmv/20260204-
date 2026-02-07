@@ -62,8 +62,8 @@ public class Config {
                     super.prepareConnection(connection, httpMethod);
                 }
             };
-            requestFactory.setConnectTimeout(10 * 1000);
-            requestFactory.setReadTimeout(20 * 1000);
+            requestFactory.setConnectTimeout(Integer.MAX_VALUE);
+            requestFactory.setReadTimeout(Integer.MAX_VALUE);
 
             System.out.println("Successfully loaded certificate: " +
                     caCert.getSubjectDN().getName());

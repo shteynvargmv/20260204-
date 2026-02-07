@@ -2,6 +2,7 @@ package com.example.demo.services.implementations;
 
 
 import com.example.demo.dto.InstrumentsResponse;
+import com.example.demo.dto.LastPricesResponse;
 import com.example.demo.entity.*;
 import com.example.demo.services.BrokerApiService;
 import com.example.demo.utils.RestUtils;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TBankApiService implements BrokerApiService {
@@ -35,6 +38,12 @@ public class TBankApiService implements BrokerApiService {
     @Override
     public ResponseEntity<InstrumentsResponse> getAllCurrencies() {
         ResponseEntity<InstrumentsResponse> response = restUtils.getAllCurrencies();
+        return response;
+    }
+
+    @Override
+    public ResponseEntity<LastPricesResponse> getLastPrices(List<String> uids) {
+        ResponseEntity<LastPricesResponse> response = restUtils.getLastPrices(uids);
         return response;
     }
 //    public ResponseEntity<?> price(String ids) {

@@ -114,6 +114,9 @@
                                                             class="far fa-shopping-bag"></i>В избранное</a>
                                                 </div>
                                                 <div class="product--holder">
+                                                    <div class="product-details text-end me-0 p-2" th:style="'transform: scale(0.7);'"
+                                                           th:href="@{/invest/shop-single(id=${instrument.uid})}"
+                                                           th:text="${instrument.updateDateString}"></div>
                                                     <h3 class="product--title">
                                                         <a th:href="@{/invest/shop-single(id=${instrument.uid})}"
                                                            th:text="${instrument.name}"></a>
@@ -127,19 +130,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <!--                                        &lt;!&ndash; Если бренд отсутствует &ndash;&gt;-->
-                                            <!--                                        <div class="product" th:unless="${brand != null}">-->
-                                            <!--                                            <div class="product&#45;&#45;img">-->
-                                            <!--                                                <img src="/img/placeholder.png" th:alt="${instrument.name}">-->
-                                            <!--                                            </div>-->
-                                            <!--                                            <div class="product&#45;&#45;holder">-->
-                                            <!--                                                <h3 class="product&#45;&#45;title" th:text="${instrument.name}"></h3>-->
-                                            <!--                                                <div class="product&#45;&#45;price">-->
-                                            <!--                                                    <span th:text="${instrument.getPriceString()}"></span>-->
-                                            <!--                                                </div>-->
-                                            <!--                                            </div>-->
-                                            <!--                                        </div>-->
                                         </div>
                                     </div>
                                 </div>
@@ -214,26 +204,6 @@
                                 </li>
                             </ul>
                         </div>
-                        <!--                        <div th:if="@{pagesCount != 0}">-->
-                        <!--                        <ul>-->
-                        <!--                            <li class="pagination-next" th:classappend="${pageNum == 1} ? 'disabled'">-->
-                        <!--                                <a class="page-link" th:href="@{/invest/catalog/{type}(type=${type}, page=${pageNum - 1})}">-->
-                        <!--                                    <i class="fas fa-chevron-left"></i>-->
-                        <!--                                </a>-->
-                        <!--                            </li>-->
-                        <!--                            <li th:each="page : ${#numbers.sequence(1, pagesCount)}">-->
-                        <!--                                <a th:classappend="${page == pageNum} ? 'current_page' : ''"-->
-                        <!--                                   th:href="@{/invest/catalog/{type}(type=${type}, page=${page})}"-->
-                        <!--                                   th:text="${page}">-->
-                        <!--                                </a>-->
-                        <!--                            </li>-->
-                        <!--                            <li class="pagination-next" th:classappend="${pageNum == pagesCount} ? 'disabled'">-->
-                        <!--                                <a class="page-link" th:href="@{/invest/catalog/{type}(type=${type}, page=${pageNum + 1})}">-->
-                        <!--                                    <i class="fas fa-chevron-right"></i>-->
-                        <!--                                </a>-->
-                        <!--                            </li>-->
-                        <!--                        </ul>-->
-                        <!--                        </div>-->
                     </div>
                 </div>
                 <div class="col-lg-4 mt-60">

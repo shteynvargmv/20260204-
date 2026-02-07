@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.FilterRequest;
 import com.example.demo.dto.InstrumentDto;
+import com.example.demo.dto.LastPriceDto;
 import com.example.demo.entity.Instrument;
 import com.example.demo.services.CacheService;
 import com.example.demo.services.DBService;
@@ -39,16 +40,53 @@ public class HomeController {
 
 //        List<Instrument> instruments = new ArrayList<>();
 //        List<InstrumentDto> dtos = new ArrayList<>();
-//        dtos.addAll(tbankApiService.getAllBonds().getBody().getInstruments());
-//        dtos.addAll(tbankApiService.getAllShares().getBody().getInstruments());
-//        dtos.addAll(tbankApiService.getAllCurrencies().getBody().getInstruments());
-//        System.out.println("1");
+//        List<InstrumentDto> dtosAll = new ArrayList<>();
+//        List<LastPriceDto> pricesAll = new ArrayList<>();
+//        List<LastPriceDto> prices = new ArrayList<>();
+//
+////------------------------------------------------------------------------------//
+//        dtos = tbankApiService.getAllBonds().getBody().getInstruments();
+//        dtosAll.addAll(dtos);
+//        List<String> uids = new ArrayList<>();
 //        for (InstrumentDto dto : dtos) {
-//            Instrument instrument = instrumentService.dtoToEntity(dto);
-//            System.out.println("2");
+//            uids.add(dto.getUid());
+//            if (uids.size() == 2999){
+//                prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
+//                uids = new ArrayList<>();
+//                pricesAll.addAll(prices);
+//            }
+//        }
+//        if (!uids.isEmpty()){
+//            prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
+//            pricesAll.addAll(prices);
+//        }
+//
+////-------------------------------------------------------------------------------------//
+//        dtos = tbankApiService.getAllShares().getBody().getInstruments();
+//        dtosAll.addAll(dtos);
+//        uids = new ArrayList<>();
+//        for (InstrumentDto dto : dtos) {
+//            uids.add(dto.getUid());
+//            if (uids.size() == 2999){
+//                prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
+//                uids = new ArrayList<>();
+//                pricesAll.addAll(prices);
+//            }
+//        }
+//        if (!uids.isEmpty()){
+//            prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
+//            pricesAll.addAll(prices);
+//        }
+//
+////-------------------------------------------------------------------------------------//
+//        dtosAll.addAll(tbankApiService.getAllCurrencies().getBody().getInstruments());
+//
+////------------------------------------------------------------------------------------//
+//        for (InstrumentDto dto : dtosAll) {
+//            Instrument instrument = instrumentService.dtoToEntity(dto, pricesAll);
 //            instruments.add(instrument);
 //        }
-//        System.out.println(instruments.size());
+//
 //        if (!instruments.isEmpty()) {
 //            instrumentService.saveAll(instruments);
 //        }

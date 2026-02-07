@@ -11,7 +11,6 @@ public class InstrumentsRequest {
     @JsonProperty("instrumentExchange")
     private InstrumentExchange instrumentExchange;
 
-    // Конструктор для Jackson
     @JsonCreator
     public InstrumentsRequest(
             @JsonProperty("instrumentStatus") InstrumentStatus instrumentStatus,
@@ -20,13 +19,11 @@ public class InstrumentsRequest {
         this.instrumentExchange = instrumentExchange;
     }
 
-    // Конструктор по умолчанию
     public InstrumentsRequest() {
         this.instrumentStatus = InstrumentStatus.INSTRUMENT_STATUS_BASE;
         this.instrumentExchange = InstrumentExchange.INSTRUMENT_EXCHANGE_UNSPECIFIED;
     }
 
-    // Геттеры и сеттеры
     public InstrumentStatus getInstrumentStatus() {
         return instrumentStatus;
     }

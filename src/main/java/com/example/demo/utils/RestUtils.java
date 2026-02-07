@@ -3,6 +3,8 @@ package com.example.demo.utils;
 
 import com.example.demo.dto.InstrumentsResponse;
 import com.example.demo.dto.InstrumentsRequest;
+import com.example.demo.dto.LastPricesRequest;
+import com.example.demo.dto.LastPricesResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
+import java.util.List;
 
 @Component
 public class RestUtils {
@@ -25,10 +28,8 @@ public class RestUtils {
                 "/tinkoff.public.invest.api.contract.v1.InstrumentsService/Bonds";
 
         System.out.println(url);
-        // Создаем объект для тела запроса
         InstrumentsRequest requestBody = new InstrumentsRequest();
 
-        // Создаем заголовки
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -52,10 +53,8 @@ public class RestUtils {
                 "/tinkoff.public.invest.api.contract.v1.InstrumentsService/Shares";
 
         System.out.println(url);
-        // Создаем объект для тела запроса
         InstrumentsRequest requestBody = new InstrumentsRequest();
 
-        // Создаем заголовки
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -73,15 +72,38 @@ public class RestUtils {
         return result;
     }
 
+    public ResponseEntity<LastPricesResponse> getLastPrices(List<String> uids){
+        String url = env.getProperty("tbank.api.base.url") +
+                "/tinkoff.public.invest.api.contract.v1.MarketDataService/GetLastPrices";
+
+        System.out.println(url);
+        LastPricesRequest requestBody = new LastPricesRequest();
+        requestBody.setInstrumentId(uids);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
+        System.out.println(env.getProperty("tbank.token"));
+
+        HttpEntity<LastPricesRequest> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<LastPricesResponse> result = restTemplateLong.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                LastPricesResponse.class
+        );
+        return result;
+    }
+
     public ResponseEntity<InstrumentsResponse> getAllCurrencies() {
         String url = env.getProperty("tbank.api.base.url") +
                 "/tinkoff.public.invest.api.contract.v1.InstrumentsService/Currencies";
 
         System.out.println(url);
-        // Создаем объект для тела запроса
         InstrumentsRequest requestBody = new InstrumentsRequest();
 
-        // Создаем заголовки
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
