@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<li th:if="${type == 'share' || type == 'all'}"
+    th:each="parameter, parameterStat : ${shareParameters}"
+    th:fragment="filter"
+    class="d-flex justify-content-between align-items-center">
+    <span th:text="${parameter.value}"></span>
+    <input type="checkbox"
+           th:id="'parameter_share_' + ${parameterStat.index}"
+           th:data-type="${type}"
+           th:value="${parameter.key}"
+           onclick="setFilter(this)"
+           th:checked="${selectedShareParameters != null and selectedShareParameters.contains(parameter.key)}"
+           class="form-check-input">
+</li>
+</body>
+</html>

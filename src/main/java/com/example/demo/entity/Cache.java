@@ -1,11 +1,15 @@
 package com.example.demo.entity;
 
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Cache {
     private Map<CacheKey, CacheData> cache = new ConcurrentHashMap<>();
     private long timeToLive = 60 * 1000 * 30;

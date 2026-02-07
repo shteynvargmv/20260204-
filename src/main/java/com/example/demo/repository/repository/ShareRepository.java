@@ -1,6 +1,6 @@
 package com.example.demo.repository.repository;
 
-import com.example.demo.entity.Bond;
+import com.example.demo.entity.Share;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,9 +10,9 @@ import java.util.List;
 
 
 @Repository
-public interface BondRepository extends JpaRepository<Bond,String> {
-    List<Bond> findAll();
-    @Query(value="select b.sector " +
-            "from Bond b where b.sector != null and b.sector != ''")
+public interface ShareRepository extends JpaRepository<Share,String> {
+    List<Share> findAll();
+    @Query(value="select s.sector " +
+            "from Share s where s.sector != null and s.sector != ''")
     List<String> findSectorsAll();
 }

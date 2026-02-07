@@ -4,22 +4,42 @@
 <body>
 
 <main th:fragment="main">
-
+    <!-- breadcrumb start  -->
+    <section class="breadcrumb pt-10 pb-40">
+        <div class="container">
+            <div class="breadcrumb__content text-center">
+                <h2 class="breadcrumb__title">
+                    <a th:if="${type != null && type == 'all'}">Все инструменты</a>
+                    <a th:if="${type != null && type == 'share'}">Акции</a>
+                    <a th:if="${type != null && type == 'bond'}">Облигации</a>
+                    <a th:if="${type != null && type == 'currency'}">Валюта</a>
+                </h2>
+            </div>
+        </div>
+    </section>
+    <!-- breadcrumb end  -->
     <!-- shop start -->
-    <section class="shop pt-115 pb-130">
+    <section class="shop pt-10 pb-130">
         <div class="container">
             <div class="row mt-none-60">
                 <div class="col-lg-8 mt-60">
                     <div class="woocommerce-content-wrap">
                         <div class="woocommerce-toolbar-top ul_li_between mt-none-15">
                             <p class="woocommerce-result-count mt-15">
-                                <a th:text="${on_page * (pageNum - 1) + 1 } + '-' +
-                                        ${pageNum == pagesCount ? instrumentsCount : on_page * pageNum } + ' из ' + ${instrumentsCount}">
+                                <a th:if="${instrumentsCount != 0}">
+                                    <span th:text="${onPage * (pageNum - 1) + 1}"></span>
+                                    <span th:text="'-'"></span>
+                                    <span th:text="${pageNum == pagesCount ? instrumentsCount : onPage * pageNum}"></span>
+                                    <span th:text="' из '"></span>
+                                    <span th:text="${instrumentsCount}"></span>
+                                </a>
+                                <a th:if="${instrumentsCount == 0}"
+                                   th:text="'0 из 0'">
                                 </a>
                             </p>
                             <div class="woocommerce-toolbar-top-right ul_li">
                                 <form class="woocommerce-ordering mt-15" method="get"
-                                      th:action="@{/invest/catalog/{type}(type=${type})}">
+                                      th:action="@{'/invest/catalog/'+${type}}">
 
                                     <select name="sort" class="orderby" onchange="this.form.submit()"
                                             style="text-align: right;">
@@ -48,8 +68,6 @@
                                             Цена: по убыванию
                                         </option>
                                     </select>
-
-                                    <input type="hidden" name="type" th:value="${type}">
                                     <input type="hidden" name="page" th:value="${pageNum}">
 
                                     <noscript>
@@ -57,20 +75,20 @@
                                     </noscript>
                                 </form>
                             </div>
-<!--                            <div class="woocommerce-toolbar-top-right ul_li">-->
-<!--                                <form class="woocommerce-ordering mt-15" method="get">-->
-<!--                                    <form name="orderby" class="orderby"-->
-<!--                                            th:action="@{/invest/catalog/{type}(type=${type}, page=${pageNum})}">-->
-<!--                                        <select name="sort" class="orderby" onchange="this.form.submit()">-->
-<!--                                        <option value="menu_order" selected="selected">Сортировка</option>-->
-<!--                                        <option value="popularity">Сортировка по названию: по возрастанию</option>-->
-<!--                                        <option value="popularity">Сортировка по названию: по убыванию</option>-->
-<!--                                        <option value="rating">Сортировка по цене: по возрастанию</option>-->
-<!--                                        <option value="price-desc">Сортировка по цене: по убыванию</option>-->
-<!--                                    </select>-->
-<!--                                    <input type="hidden" name="post_type" value="product">-->
-<!--                                </form>-->
-<!--                            </div>-->
+                            <!--                            <div class="woocommerce-toolbar-top-right ul_li">-->
+                            <!--                                <form class="woocommerce-ordering mt-15" method="get">-->
+                            <!--                                    <form name="orderby" class="orderby"-->
+                            <!--                                            th:action="@{/invest/catalog/{type}(type=${type}, page=${pageNum})}">-->
+                            <!--                                        <select name="sort" class="orderby" onchange="this.form.submit()">-->
+                            <!--                                        <option value="menu_order" selected="selected">Сортировка</option>-->
+                            <!--                                        <option value="popularity">Сортировка по названию: по возрастанию</option>-->
+                            <!--                                        <option value="popularity">Сортировка по названию: по убыванию</option>-->
+                            <!--                                        <option value="rating">Сортировка по цене: по возрастанию</option>-->
+                            <!--                                        <option value="price-desc">Сортировка по цене: по убыванию</option>-->
+                            <!--                                    </select>-->
+                            <!--                                    <input type="hidden" name="post_type" value="product">-->
+                            <!--                                </form>-->
+                            <!--                            </div>-->
                         </div>
                         <div class="woocommerce-content-inner">
                             <div class="products" th:if="${instruments!=null and !instruments.isEmpty()}">
@@ -80,7 +98,7 @@
                                         <div class="product">
                                             <div class="product--img">
                                                 <a th:if="${brand != null}"
-                                                        th:href="@{/invest/shop-single(id=${instrument.uid})}">
+                                                   th:href="@{/invest/shop-single(id=${instrument.uid})}">
                                                     <img th:src="@{'//invest-brands.cdn-tinkoff.ru/' +
                                                          ${brand.getLogo()} + 'x640' + ${brand.getLogoExt()}}"
                                                          alt=""
@@ -231,17 +249,57 @@
                         </div>
                         <div class="widget mt-40">
                             <h2 class="widget__title">
+                                <span>Перейти к</span>
+                            </h2>
+                            <div class="widget__inner">
+                                <div class="tagcloud">
+                                    <a th:href="@{/invest/catalog/share}">Акции</a>
+                                    <a th:href="@{/invest/catalog/bond}">Облигации</a>
+                                    <a th:href="@{/invest/catalog/currency}">Валюта</a>
+                                    <a th:href="@{/invest/catalog/all}">Все инструменты</a>
+                                </div>
+                            </div>
+                        </div>
+
+                            <div class="widget mt-40" th:if="${type == 'share' || type == 'bond' || type == 'all'}">
+                                <h2 class="widget__title">
+                                    <span>По параметрам</span>
+                                </h2>
+                                <div class="widget__inner" >
+                                    <form th:action="@{/invest/catalog/{type}(type=${type})}"
+                                          method="get"
+                                          id="parameterForm">
+                                        <ul class="widget__category list-unstyled">
+                                            <li th:replace="~{layout/catalog-filter-share :: filter}"></li>
+                                            <li th:replace="~{layout/catalog-filter-bond :: filter}"></li>
+                                            <li th:replace="~{layout/catalog-filter-all :: filter}"></li>
+                                        </ul>
+                                    </form>
+                                </div>
+                        </div>
+                        <div class="widget mt-40"
+                             th:if="${sectors != null && !sectors.isEmpty() && type != 'currency'}">
+                            <h2 class="widget__title">
                                 <span>По отраслям</span>
                             </h2>
                             <div class="widget__inner">
-                                <ul class="widget__category list-unstyled">
-                                    <li><a th:href="@{/invest/catalog}">Accessories <span>(22)</span></a></li>
-                                    <li><a th:href="@{/invest/catalog}">Business <span>(30)</span></a></li>
-                                    <li><a th:href="@{/invest/catalog}">Digital gadgets <span>(24)</span></a></li>
-                                    <li><a th:href="@{/invest/catalog}">Technology <span>(15)</span></a></li>
-                                    <li><a th:href="@{/invest/catalog}">Law <span>(10)</span></a></li>
-                                    <li><a th:href="@{/invest/catalog}">rooms <span>(12)</span></a></li>
-                                </ul>
+                                <form th:action="@{'/invest/catalog/'+${type}}"
+                                      method="get"
+                                      id="sectorForm">
+                                    <ul class="widget__category list-unstyled">
+                                        <li th:each="sector, sectorStat : ${sectors}"
+                                            class="d-flex justify-content-between align-items-center">
+                                            <span th:text="${sector}"></span>
+                                            <input type="checkbox"
+                                                   th:id="'sector_' + ${sectorStat.index}"
+                                                   th:data-type="${type}"
+                                                   th:value="${sector}"
+                                                   onclick="setFilter(this)"
+                                                   th:checked="${selectedSectors != null and selectedSectors.contains(sector)}"
+                                                   class="form-check-input">
+                                        </li>
+                                    </ul>
+                                </form>
                             </div>
                         </div>
                         <div class="widget widget_price_filter mt-40">
@@ -256,22 +314,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="widget mt-40">
-                            <h2 class="widget__title">
-                                <span>Tags</span>
-                            </h2>
-                            <div class="widget__inner">
-                                <div class="tagcloud">
-                                    <a th:href="@{/invest/catalog}">Design</a>
-                                    <a th:href="@{/invest/catalog}">Development</a>
-                                    <a th:href="@{/invest/catalog}">UI/UX</a>
-                                    <a th:href="@{/invest/catalog}">Startup</a>
-                                    <a th:href="@{/invest/catalog}">Strategu</a>
-                                    <a th:href="@{/invest/catalog}">Management</a>
-                                    <a th:href="@{/invest/catalog}">Optimization</a>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>

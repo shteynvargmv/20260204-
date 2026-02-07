@@ -1,9 +1,11 @@
 package com.example.demo.config;
 
 import com.example.demo.entity.Cache;
+import com.example.demo.services.CacheService;
 import com.example.demo.services.DBService;
 import com.example.demo.services.BrokerApiService;
 import com.example.demo.services.implementations.InstrumentService;
+import com.example.demo.services.implementations.SimpleCacheService;
 import com.example.demo.services.implementations.TBankApiService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,13 +75,6 @@ public class Config {
             e.printStackTrace();
             return createDefaultRestTemplate();
         }
-//        System.out.println("getRestTemplateLong");
-//        RestTemplate restTemplate = new RestTemplate();
-//        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-//        requestFactory.setConnectTimeout(10 * 1000);
-//        requestFactory.setReadTimeout(20 * 1000);
-//        restTemplate.setRequestFactory(requestFactory);
-//        return restTemplate;
     }
 
     private RestTemplate createDefaultRestTemplate() {
@@ -91,20 +86,12 @@ public class Config {
 
     @Bean(name = "restTemplateShort")
     public RestTemplate getRestTemplateShort() {
-        System.out.println("getRestTemplateShort");
         RestTemplate restTemplate = new RestTemplate();
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(3 * 1000);
         requestFactory.setReadTimeout(5 * 1000);
         restTemplate.setRequestFactory(requestFactory);
         return restTemplate;
-    }
-
-    @Bean
-    public Cache getCache() {
-        Cache cache = new Cache();
-        System.out.println(cache.getTimeToLive());
-        return cache;
     }
 
     @Bean(name = "tbank")
@@ -115,6 +102,11 @@ public class Config {
     @Bean(name = "instrument")
     public DBService getDBService(){
         return new InstrumentService();
+    }
+
+    @Bean(name = "simple")
+    public CacheService getCacheService(){
+        return new SimpleCacheService();
     }
 
 }

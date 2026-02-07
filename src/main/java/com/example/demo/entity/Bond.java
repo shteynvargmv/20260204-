@@ -14,9 +14,10 @@ public class Bond {
     @Column(name = "uid", length = 36)
     public String uid; //Идентификатор инструмента
 
-    public Date callDate; // Дата досрочного выкупа (оферты)
+    private boolean noCallFlag; // Без оферты
+    private Date callDate; // Дата досрочного выкупа (оферты)
 
-    public Date maturityDate; // Дата погашения
+    private Date maturityDate; // Дата погашения
 
     // Накопленный купонный доход (НКД)
     private String aciСurrency; // валюта
@@ -24,21 +25,36 @@ public class Bond {
     private int aciUnits; // целая часть
     private int aciNano; //представления дробной части (копеек * 1_000_000_000)
 
-    public int couponQuantityPerYear; // Количество купонов в год
+    private int couponQuantityPerYear; // Количество купонов в год
+    private Boolean couponEveryMonthFlag; // Флаг ежемесячный купон
 
-    public boolean floatingCouponFlag; // Флаг плавающего купона
+    private boolean floatingCouponFlag; // Флаг плавающего купона
 
-    public boolean subordinatedFlag; // Флаг субординированности (субординированные облигации)
+    private boolean subordinatedFlag; // Флаг субординированности (субординированные облигации)
 
-    public boolean amortizationFlag; // Флаг амортизации (амортизируемые облигации)
+    private boolean amortizationFlag; // Флаг амортизации (амортизируемые облигации)
 
-    public boolean perpetualFlag; // Флаг бессрочности (вечные облигации)
+    private boolean perpetualFlag; // Флаг бессрочности (вечные облигации)
 
+    private String sector; //
+    // Сектор экономики
     @OneToOne(mappedBy = "bond")
     private Instrument instrument;
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public void setNoCallFlag(boolean noCallFlag) {
+        this.noCallFlag = noCallFlag;
+    }
+
+    public Boolean getCouponEveryMonthFlag() {
+        return couponEveryMonthFlag;
+    }
+
+    public void setCouponEveryMonthFlag(Boolean couponEveryMonthFlag) {
+        this.couponEveryMonthFlag = couponEveryMonthFlag;
     }
 
     public void setCallDate(Date callDate) {
@@ -89,6 +105,10 @@ public class Bond {
         return uid;
     }
 
+    public boolean isNoCallFlag() {
+        return noCallFlag;
+    }
+
     public Date getCallDate() {
         return callDate;
     }
@@ -131,5 +151,13 @@ public class Bond {
 
     public Instrument getInstrument() {
         return instrument;
+    }
+
+    public void setSector(String sector) {
+        this.sector = sector;
+    }
+
+    public String getSector() {
+        return sector;
     }
 }

@@ -5,8 +5,8 @@ import com.example.demo.dto.InstrumentDto;
 import com.example.demo.entity.*;
 import com.example.demo.repository.repository.InstrumentRepository;
 import com.example.demo.repository.repository.BondRepository;
+import com.example.demo.repository.repository.ShareRepository;
 import com.example.demo.services.DBService;
-import com.example.demo.utils.CacheUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
@@ -14,12 +14,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,10 +34,10 @@ public class InstrumentService implements DBService {
     BondRepository bondRepository;
 
     @Autowired
-    BondRepository brandRepository;
+    ShareRepository shareRepository;
 
     @Autowired
-    private Cache cache;
+    BondRepository brandRepository;
 
     @Autowired
     @Qualifier("restTemplateLong")
@@ -47,27 +47,31 @@ public class InstrumentService implements DBService {
     Environment env;
 
     @Override
-    public Page<Instrument> findAll(int page, String sort) {
-        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, this.getSort(sort));
+    public Page<Instrument> findAll(int page, Sort sort) {
+        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
         return instrumentRepository.findAll(pageable);
     }
+
     @Override
-    public Page<Instrument> findByBondIsNotEmpty(int page, String sort) {
-        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, this.getSort(sort));
+    public Page<Instrument> findByBondIsNotEmpty(int page, Sort sort) {
+        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
         return instrumentRepository.findByBondIsNotNull(pageable);
     }
+
     @Override
-    public Page<Instrument> findByShareIsNotEmpty(int page, String sort) {
-        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, this.getSort(sort));
+    public Page<Instrument> findByShareIsNotEmpty(int page, Sort sort) {
+        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
         return instrumentRepository.findByShareIsNotNull(pageable);
     }
+
     @Override
-    public Page<Instrument> findByCurrencyIsNotEmpty(int page, String sort) {
-        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, this.getSort(sort));
+    public Page<Instrument> findByCurrencyIsNotEmpty(int page, Sort sort) {
+        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
         return instrumentRepository.findByCurrencyIsNotNull(pageable);
     }
+
     @Override
-    public void saveAll(List<Instrument> instruments){
+    public void saveAll(List<Instrument> instruments) {
         instrumentRepository.saveAll(instruments);
     }
 
@@ -114,7 +118,18 @@ public class InstrumentService implements DBService {
             case "bond" -> {
                 Bond bond = new Bond();
                 bond.setUid(dto.getUid());
-                bond.setCallDate(dto.getCallDate());
+                Date callDate = dto.getCallDate();
+                bond.setCallDate(callDate);
+                if (callDate != null && callDate.after(new Date(0))) {
+                    bond.setNoCallFlag(false);
+                } else {
+                    bond.setNoCallFlag(true);
+                }
+                if (dto.getCouponQuantityPerYear() == 12) {
+                    bond.setCouponEveryMonthFlag(true);
+                } else {
+                    bond.setCouponEveryMonthFlag(false);
+                }
                 bond.setMaturityDate(dto.getMaturityDate());
                 bond.setAciСurrency(dto.getAciValue().getCurrency());
                 bond.setAciUnits(dto.getAciValue().getUnits());
@@ -124,6 +139,7 @@ public class InstrumentService implements DBService {
                 bond.setSubordinatedFlag(dto.isSubordinatedFlag());
                 bond.setAmortizationFlag(dto.isAmortizationFlag());
                 bond.setPerpetualFlag(dto.isPerpetualFlag());
+                bond.setSector(dto.getSector());
                 instrument.setBond(bond);
             }
             case "currency" -> {
@@ -138,39 +154,127 @@ public class InstrumentService implements DBService {
         return instrument;
     }
 
-    private Sort getSort(String sortBy){
-        String[] sort = sortBy.split("_");
-        if (sortBy.equals("none")) {
-            cache.del(CacheUtils.getCacheKey("/catalog", "sort"));
-
-        } else if (sort.length > 1) {
-            String[] sortFields = Arrays.copyOf(sort, sort.length - 1);
-            String sortArg = sort[sort.length - 1];
-            SortKey sortKey = new SortKey(sortFields, sortArg);
-
-            cache.put(CacheUtils.getCacheKey("/catalog", "sort"), sortKey);
-            return sortKey.getSort();
-
-        } else {
-                CacheKey cacheKey = CacheUtils.getCacheKey("/catalog", new Param("sort", ""));
-                CacheDataBody[] cacheDataBody = cache.get(cacheKey);
-                if (cacheDataBody != null && cacheDataBody.length > 0) {
-                    SortKey cached = (SortKey) cacheDataBody[0];
-                    return cached.getSort();
-                }
-        }
-        return Sort.by("uid").ascending();
+    @Override
+    public List<String> findSectorsAll() {
+        List<String> bondsSectors = bondRepository.findSectorsAll();
+        List<String> sharesSectors = shareRepository.findSectorsAll();
+        return Stream.concat(bondsSectors.stream(), sharesSectors.stream()).distinct().toList();
     }
 
-    public String getSortBy(){
-            CacheKey cacheKey = CacheUtils.getCacheKey("/catalog", new Param("sort", ""));
-            CacheDataBody[] cacheDataBody = cache.get(cacheKey);
-            if (cacheDataBody != null && cacheDataBody.length > 0) {
-                SortKey cached = (SortKey) cacheDataBody[0];
-                return Stream.concat(Arrays.stream(cached.getSortFields()),Stream.of(cached.getSortArg()))
-                        .collect(Collectors.joining("_"));
-            }
-            return "none";
+    @Override
+    public Page<Instrument> findAllBySectors(List<String> sectors, List<String> parameters, int page, Sort sort) {
+        System.out.println("findAllBySec " + parameters);
+        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
+        Page<Instrument> instruments = instrumentRepository.findAllBySectors(
+                (sectors.size() == 0) ? null : sectors,
+                parameters.contains("amortizationFlag"),
+                parameters.contains("noCallFlag"),
+                parameters.contains("floatingCouponFlag"),
+                parameters.contains("perpetualFlag"),
+                parameters.contains("subordinatedFlag"),
+                parameters.contains("couponEveryMonthFlag"),
+                parameters.contains("divYieldFlag"),
+                parameters.contains("liquidityFlag"),
+                parameters.contains("forQualInvestorFlag"),
+                pageable);
+        return instruments;
+    }
 
+    @Override
+    public Page<Instrument> findShareBySectors(List<String> sectors, List<String> parameters, int page, Sort sort) {
+        System.out.println("findShareBySec " + parameters);
+        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
+        Page<Instrument> instruments = instrumentRepository.findShareBySectors(
+                (sectors.size() == 0) ? null : sectors,
+                parameters.contains("divYieldFlag"),
+                parameters.contains("liquidityFlag"),
+                parameters.contains("forQualInvestorFlag"),
+                pageable);
+        return instruments;
+    }
+
+    @Override
+    public Page<Instrument> findBondBySectors(List<String> sectors, List<String> parameters, int page, Sort sort) {
+        System.out.println("findBondBySec " + parameters);
+        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
+        Page<Instrument> instruments = instrumentRepository.findBondBySectors(
+                (sectors.size() == 0) ? null : sectors,
+                parameters.contains("amortizationFlag"),
+                parameters.contains("noCallFlag"),
+                parameters.contains("floatingCouponFlag"),
+                parameters.contains("perpetualFlag"),
+                parameters.contains("subordinatedFlag"),
+                parameters.contains("couponEveryMonthFlag"),
+                parameters.contains("forQualInvestorFlag"),
+                pageable);
+        return instruments;
+    }
+
+    @Override
+    public Page<Instrument> findInstruments(String type, Filter filter, String pageNum, Sort sort) {
+
+        List<String> sectors = filter.getSelectedSectors().stream().filter(x -> x != null && !x.isEmpty()).toList();
+        List<String> shareParameters = filter.getSelectedShareParameters();
+        List<String> bondParameters = filter.getSelectedBondParameters();
+        List<String> allParameters = filter.getSelectedAllParameters();
+        switch (type) {
+            case "all" -> {
+                if (sectors.isEmpty() &&
+                        (shareParameters == null || shareParameters.isEmpty()) &&
+                        (bondParameters == null || bondParameters.isEmpty()) &&
+                        (allParameters == null || allParameters.isEmpty())) {
+                    return findAll(Integer.parseInt(pageNum) - 1, sort);
+                } else {
+                    return findAllBySectors(sectors,
+                            Stream.concat(
+                                    Stream.concat(
+                                           shareParameters.stream(),
+                                           bondParameters.stream()
+                                            ),
+                                            allParameters.stream()
+                                    )
+                                    .collect(Collectors.toList()),
+                            Integer.parseInt(pageNum) - 1,
+                            sort);
+                }
+
+            }
+            case "share" -> {
+                if (sectors.isEmpty() &&
+                        (shareParameters == null || shareParameters.isEmpty()) &&
+                        (allParameters == null || allParameters.isEmpty())) {
+                    return findByShareIsNotEmpty(Integer.parseInt(pageNum) - 1, sort);
+                } else {
+                    return findShareBySectors(sectors,
+                            Stream.concat(shareParameters.stream(),
+                                            allParameters.stream())
+                                    .collect(Collectors.toList()),
+                            Integer.parseInt(pageNum) - 1,
+                            sort);
+                }
+            }
+            case "bond" -> {
+                if (sectors.isEmpty() &&
+                        (bondParameters == null || bondParameters.isEmpty()) &&
+                        (allParameters == null || allParameters.isEmpty())) {
+                    return findByBondIsNotEmpty(Integer.parseInt(pageNum) - 1, sort);
+                } else {
+                    return findBondBySectors(
+                            sectors,
+                            Stream.concat(
+                                    bondParameters.stream(),
+                                    allParameters.stream())
+                            .collect(Collectors.toList()),
+                            Integer.parseInt(pageNum) - 1,
+                            sort);
+                }
+            }
+            case "currency" -> {
+                return findByCurrencyIsNotEmpty(Integer.parseInt(pageNum) - 1, sort);
+            }
+            default -> {
+                return null;
+            }
+        }
     }
 }
