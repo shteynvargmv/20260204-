@@ -27,11 +27,8 @@ public enum InstrumentStatus {
                 return status;
             }
         }
-        // Возвращаем UNSPECIFIED по умолчанию или кидаем исключение
         return INSTRUMENT_STATUS_UNSPECIFIED;
-        // Или, если нужно строгое соответствие:
-        // throw new IllegalArgumentException("Unknown InstrumentStatus: " + value);
-    }
+ }
 
     @Override
     public String toString() {

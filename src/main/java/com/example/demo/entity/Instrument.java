@@ -1,11 +1,20 @@
 package com.example.demo.entity;
 
+import com.example.demo.model.CurrencySymbol;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 
@@ -66,6 +75,32 @@ public class Instrument {
             unique = true
     )
     private Currency currency;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "currency_symbol",
+                referencedColumnName = "id")
+    private CurrencySymbol symbol;
+
+    @Transient
+    private String priceString;
+
+    @Transient
+    private String updateDateString;
+
+    @Transient
+    private String typeString;
+
+    public CurrencySymbol getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(CurrencySymbol symbol) {
+        this.symbol = symbol;
+    }
+
+    public String getTypeString() {
+        return typeString;
+    }
 
     public Date getUpdateDate() {
         return updateDate;
@@ -275,11 +310,11 @@ public class Instrument {
         return isin;
     }
 
-    @Transient
-    private String priceString;
 
-    @Transient
-    private String updateDateString;
+
+    public void setTypeString(String typeString) {
+        this.typeString = typeString;
+    }
 
     public String getUpdateDateString() {
         return updateDateString;
@@ -310,12 +345,33 @@ public class Instrument {
             nano *= 10;
         }
 
+        String curr;
+        int rounding;
+        CurrencySymbol symbol = getSymbol();
+        if (symbol != null){
+            rounding = symbol.getRounding();
+            curr = getSymbol().getSymb();
+        } else {
+            rounding = 3;
+            curr = nominalCurrency.toUpperCase();
+        }
         BigDecimal total = new BigDecimal(units).add(
                 new BigDecimal(nano).divide(new BigDecimal("1000000000")))
-                        .setScale(3, RoundingMode.HALF_UP);
+                        .setScale(rounding, RoundingMode.HALF_UP);
 
-        priceString = total + " " + nominalCurrency.toUpperCase();
+        priceString = total + " " + curr;
+
         updateDateString = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(updateDate);
+
+        if (share != null){
+            typeString = "Акция";
+        }
+        if (bond != null){
+            typeString = "Облигация";
+        }
+        if (currency != null){
+            typeString = "Валюта";
+        }
     }
 
 

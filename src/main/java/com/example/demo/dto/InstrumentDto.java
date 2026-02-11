@@ -199,6 +199,17 @@ public class InstrumentDto {
             return "unknown"; // Неизвестно
         }
     }
+    public String getInstrumentTypeString() {
+        if (divYieldFlag || ipoDate != null) {
+            return "Акция"; // Акция
+        } else if (callDate != null || maturityDate != null || couponQuantityPerYear > 0) {
+            return "Облигация"; // Облигация
+        } else if (isoCurrencyName != null) {
+            return "Валюта"; // Валюта
+        } else {
+            return "Подробно"; // Неизвестно
+        }
+    }
 
     public void setAssetUid(String assetUid) {
         this.assetUid = assetUid;

@@ -13,7 +13,7 @@
                     <li class="menu-item">
                         <a th:href="@{/invest/home}">Главная</a>
                     </li>
-                    <li class="menu-item-has-children">
+                    <li class="menu-item-has-children" id="catalog-over">
                         <a th:href="@{/invest/catalog/all}">Каталог</a>
                         <ul class="sub">
                             <li><a th:href="@{/invest/catalog/all}"><span>Все инструменты</span></a></li>
@@ -22,8 +22,8 @@
                             <li><a th:href="@{/invest/catalog/currency}"><span>Валюта</span></a></li>
                         </ul>
                     </li>
-                    <li class="menu-item">
-                        <a th:href="@{/invest/catalog/all}">Избранное</a>
+                    <li class="menu-item" id="favorite-over">
+                        <a th:href="@{/invest/catalog/all}" >Избранное</a>
                         <!--                            <ul class="sub">-->
                         <!--                                <li><a href="project.html"><span>Portfolio</span></a></li>-->
                         <!--                                <li><a href="project-single.html"><span>Portfolio Details</span></a></li>-->

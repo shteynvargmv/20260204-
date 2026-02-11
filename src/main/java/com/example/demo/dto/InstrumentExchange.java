@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum InstrumentExchange {
 
-    // Значение из JSON
     INSTRUMENT_EXCHANGE_UNSPECIFIED("INSTRUMENT_EXCHANGE_UNSPECIFIED"),
-
-    // Возможные дополнительные значения (добавьте по необходимости)
     INSTRUMENT_EXCHANGE_MOEX("INSTRUMENT_EXCHANGE_MOEX"),
     INSTRUMENT_EXCHANGE_RTS("INSTRUMENT_EXCHANGE_RTS"),
     INSTRUMENT_EXCHANGE_SPB("INSTRUMENT_EXCHANGE_SPB"),
@@ -32,10 +29,7 @@ public enum InstrumentExchange {
                 return exchange;
             }
         }
-        // Возвращаем UNSPECIFIED по умолчанию или кидаем исключение
         return INSTRUMENT_EXCHANGE_UNSPECIFIED;
-        // Или, если нужно строгое соответствие:
-        // throw new IllegalArgumentException("Unknown InstrumentExchange: " + value);
     }
 
     @Override

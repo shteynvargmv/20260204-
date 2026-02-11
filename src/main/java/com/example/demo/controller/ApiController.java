@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.InstrumentsResponse;
-import com.example.demo.dto.LastPricesRequest;
 import com.example.demo.dto.LastPricesResponse;
-import com.example.demo.services.BrokerApiService;
+import com.example.demo.service.BrokerApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/invest")
+@RequestMapping("/api")
 public class ApiController {
 
     @Autowired

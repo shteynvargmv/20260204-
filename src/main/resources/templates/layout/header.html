@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 
 <!-- header start -->
@@ -17,8 +17,8 @@
                                 <li class="menu-item-has-children active">
                                     <a th:href="@{/invest/home}"><span>ГЛАВНАЯ</span></a>
                                 </li>
-                                <li class="menu-item-has-children">
-                                    <a th:href="@{/invest/catalog/all}"><span></span>КАТАЛОГ</a>
+                                <li class="menu-item-has-children" id="catalog">
+                                    <a th:href="@{/invest/catalog/all}" ><span></span>КАТАЛОГ</a>
                                     <ul class="submenu">
                                         <li><a th:href="@{/invest/catalog/all}"><span>Все инструменты</span></a></li>
                                         <li><a th:href="@{/invest/catalog/share}"><span>Акции</span></a>
@@ -28,7 +28,7 @@
                                         <li><a th:href="@{/invest/catalog/currency}"><span>Валюта</span></a></li>
                                     </ul>
                                 </li>
-                                <li class="menu-item-has-children">
+                                <li class="menu-item-has-children" id="favorite">
                                     <a th:href="@{/index.html}"><span>ИЗБРАННОЕ</span></a>
                                     <!--                                    <ul class="submenu">-->
                                     <!--                                        <li><a th:href="@{/project.html}"><span>Portfolio</span></a></li>-->
@@ -53,7 +53,7 @@
                                             <li class="menu-item">
                                                 <a th:href="@{/invest/home}"><span>Главная</span></a>
                                             </li>
-                                            <li class="menu-item menu-item-has-children">
+                                            <li class="menu-item menu-item-has-children" id="catalog-left">
                                                 <a th:href="@{/invest/catalog/all}"><span>Кaталог</span></a>
                                                 <ul class="sub-menu">
                                                     <li><a th:href="@{/invest/catalog/all}"><span>Все инструменты</span></a>
@@ -66,7 +66,7 @@
                                                     </li>
                                                 </ul>
                                             </li>
-                                            <li class="menu-item">
+                                            <li class="menu-item" id="favorite-left">
                                                 <a th:href="@{/invest/portfolio}"><span>Избранное</span></a>
                                                 <!--                                                <ul class="sub-menu">-->
                                                 <!--                                                    <li><a th:href="@{/project.html}"><span>Portfolio</span></a></li>-->
@@ -85,10 +85,11 @@
                     </div>
                     <div class="ul_li">
                         <div class="xb-header_btn d-none d-lg-block">
-                            <a th:href="@{/invest/sign-in}">ВХОД</a>
+                            <a th:href="@{/invest/sign-in}" id="login">ВХОД</a>
+                            <a onclick="logout(this)" id="logout">ВЫХОД</a>
                         </div>
                         <div class="side-menu-4 d-none d-lg-block">
-                            <a href="javascript:void(0);" class="burger-menu">
+                            <a href="javascript:void(0);" class="burger-menu" id="burger">
                                 <img th:src="@{/img/digital-marketing/icon/menu01.png}" alt="">
                             </a>
                         </div>

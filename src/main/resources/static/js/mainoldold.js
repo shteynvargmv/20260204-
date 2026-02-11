@@ -1,9 +1,37 @@
 !function (e) {
     "use strict";
+
+    // Функция для проверки роли пользователя
+    function checkUserRole() {
+        try {
+            const role = localStorage.getItem('role');
+            // Проверяем, есть ли роль ADMIN или USER
+            const hasAccess = role === 'ADMIN' || role === 'USER';
+
+            if (hasAccess) {
+                // Показываем все кнопки кроме logout
+                e('#catalog, #login, #favorite').show();
+                e('#logout').hide();
+            } else {
+                // Скрываем кнопки для неавторизованных
+                e('#catalog, #login, #favorite').hide();
+                e('#logout').hide();
+            }
+        } catch (error) {
+            console.error('Ошибка при проверке роли:', error);
+            // В случае ошибки скрываем кнопки
+            e('#catalog, #login, #favorite').hide();
+            e('#logout').hide();
+        }
+    }
+
     e(window).on("load", function () {
         e("#xb-loadding").fadeOut("slow", function () {
             e(this).remove()
         }), new WOW({boxClass: "wow", animateClass: "animated", offset: 0, mobile: !1, live: !0}).init()
+
+        // Проверяем роль при загрузке страницы
+        checkUserRole();
     }), e(window).on("scroll", function () {
         e(this).scrollTop() > 500 ? e(".xb-backtotop").addClass("active") : e(".xb-backtotop").removeClass("active")
     }), e(function () {
@@ -13,6 +41,9 @@
     }), t = "", l = 0, e(".xb-header").length && e(".xb-header").addClass("original").clone(!0).insertAfter(".xb-header").addClass("xb-header-area-sticky xb-sticky-stt").removeClass("original"), e(window).on("scroll", function () {
         var s = e(window).scrollTop();
         t = s < l ? "up" : "down", l = s, e("#xb-header-area").hasClass("is-sticky") && (l > 100 ? e(".xb-header-area-sticky.xb-sticky-stb").addClass("xb-header-fixed") : e(".xb-header-area-sticky.xb-sticky-stb").removeClass("xb-header-fixed"), "up" === t && l > 100 ? e(".xb-header-area-sticky.xb-sticky-stt").addClass("xb-header-fixed") : e(".xb-header-area-sticky.xb-sticky-stt").removeClass("xb-header-fixed"))
+
+        // Проверяем роль при прокрутке (на случай sticky header)
+        checkUserRole();
     }), e(".progress-bar").length && (e(".progress-bar").appear(), e(document.body).on("appear", ".progress-bar", function () {
         var s = e(this);
         if (!s.hasClass("appeared")) {
@@ -43,6 +74,9 @@
         "#" !== e(this).attr("href") || i.is(".xb-menu-toggle") || (s.stopPropagation(), e(this).find(".xb-menu-toggle").hasClass("active") || (e(this).closest("ul").find(".xb-menu-toggle.active").toggleClass("active"), e(this).closest("ul").find(".sub-menu.active").toggleClass("active").slideToggle()), e(this).find(".xb-menu-toggle").toggleClass("active"), e(this).closest(".menu-item").find("> .sub-menu").toggleClass("active"), e(this).closest(".menu-item").find("> .sub-menu").slideToggle())
     }), e(".xb-nav-mobile").on("click", function () {
         e(this).toggleClass("active"), e(".xb-header-menu").toggleClass("active")
+
+        // Проверяем роль при открытии мобильного меню
+        checkUserRole();
     }), e(".xb-menu-close, .xb-header-menu-backdrop").on("click", function () {
         e(this).removeClass("active"), e(".xb-header-menu").removeClass("active")
     }), new Swiper(".dm-brand-slider", {
@@ -425,4 +459,22 @@
 
         i('[data-xbh-trigger="creative"]', '[data-xbh-hero-images="creative"]'), i('[data-xbh-trigger="design"]', '[data-xbh-hero-images="design"]'), i('[data-xbh-trigger="studio"]', '[data-xbh-hero-images="studio"]')
     }()
+
+    // Дополнительно: отслеживаем изменения в localStorage
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'role') {
+            checkUserRole();
+        }
+    });
+
+    // Также проверяем роль при кликах (на случай изменения роли без перезагрузки)
+    document.addEventListener('click', function() {
+        // Проверяем роль каждые 10 кликов (чтобы не нагружать систему)
+        if (Math.random() < 0.1) {
+            checkUserRole();
+        }
+    });
+
+    // Инициализация при первом запуске
+    checkUserRole();
 }(jQuery);

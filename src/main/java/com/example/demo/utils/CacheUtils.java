@@ -1,7 +1,7 @@
 package com.example.demo.utils;
 
-import com.example.demo.entity.CacheKey;
-import com.example.demo.entity.Param;
+import com.example.demo.model.CacheKey;
+import com.example.demo.model.Param;
 
 import java.util.Arrays;
 import java.util.HashMap;

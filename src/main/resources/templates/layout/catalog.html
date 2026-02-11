@@ -98,14 +98,14 @@
                                         <div class="product">
                                             <div class="product--img">
                                                 <a th:if="${brand != null}"
-                                                   th:href="@{/invest/shop-single(id=${instrument.uid})}">
+                                                   th:href="@{/invest/catalog-single/{uid}(uid=${instrument.uid})}">
                                                     <img th:src="@{'//invest-brands.cdn-tinkoff.ru/' +
                                                          ${brand.getLogo()} + 'x640' + ${brand.getLogoExt()}}"
                                                          alt=""
                                                          onerror="this.onerror=null; this.src='/img/shop/noLogo.jpg';">
                                                 </a>
                                                 <a th:unless="${brand != null}"
-                                                   th:href="@{/invest/shop-single(id=${instrument.uid})}">
+                                                   th:href="@{/invest/catalog-single/{uid}(uid=${instrument.uid})}">
                                                     <img th:src="@{/img/shop/noLogo.jpg}"
                                                          alt="">
                                                 </a>
@@ -115,14 +115,14 @@
                                                 </div>
                                                 <div class="product--holder">
                                                     <div class="product-details text-end me-0 p-2" th:style="'transform: scale(0.7);'"
-                                                           th:href="@{/invest/shop-single(id=${instrument.uid})}"
+                                                           th:href="@{/invest/catalog-single/{uid}(uid=${instrument.uid})}"
                                                            th:text="${instrument.updateDateString}"></div>
                                                     <h3 class="product--title">
-                                                        <a th:href="@{/invest/shop-single(id=${instrument.uid})}"
+                                                        <a th:href="@{/invest/catalog-single/{uid}(uid=${instrument.uid})}"
                                                            th:text="${instrument.name}"></a>
                                                     </h3>
                                                     <h3 class="product--title fs-6 text-secondary">
-                                                        <a th:href="@{/invest/shop-single(id=${instrument.uid})}"
+                                                        <a th:href="@{/invest/catalog-single/{uid}(uid=${instrument.uid})}"
                                                            th:text="${instrument.ticker}"></a>
                                                     </h3>
                                                     <div class="product--price">

@@ -1,12 +1,16 @@
 package com.example.demo.config;
 
-import com.example.demo.entity.Cache;
-import com.example.demo.services.CacheService;
-import com.example.demo.services.DBService;
-import com.example.demo.services.BrokerApiService;
-import com.example.demo.services.implementations.InstrumentService;
-import com.example.demo.services.implementations.SimpleCacheService;
-import com.example.demo.services.implementations.TBankApiService;
+import com.example.demo.model.Currencies;
+import com.example.demo.model.CurrencyData;
+import com.example.demo.model.CurrencySymbol;
+import com.example.demo.service.CacheService;
+import com.example.demo.service.DBService;
+import com.example.demo.service.BrokerApiService;
+import com.example.demo.service.implementations.InstrumentService;
+import com.example.demo.service.implementations.SimpleCacheService;
+import com.example.demo.service.implementations.TBankApiService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -16,13 +20,36 @@ import org.springframework.web.client.RestTemplate;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 public class Config {
+
+    @Bean
+    public Currencies getCurrencySymbols(){
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            System.out.println("symbol error1 ");
+            ClassPathResource resource = new ClassPathResource("static/json/currency.json");
+            System.out.println("symbol error2");
+            try (InputStream inputStream = resource.getInputStream()) {
+                List<CurrencyData> currencyDataList = mapper.readValue(inputStream, new TypeReference<List<CurrencyData>>() {});
+                System.out.println(currencyDataList);
+                return new Currencies(currencyDataList);
+            }
+
+        } catch (IOException e){
+            System.out.println("symbol error " + e.getMessage());
+        }
+        return new Currencies();
+    }
+
     @Bean(name = "restTemplateLong")
     public RestTemplate getRestTemplateLong() {
         try {

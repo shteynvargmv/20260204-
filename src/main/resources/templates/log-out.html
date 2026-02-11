@@ -27,7 +27,9 @@
             <h1 class="text-uppercase text-white font-bold text-2xl mb-0">InvestMate</h1>
           </a>
         </div>
-
+          <a th:href="@{/invest/home}" class="text-sm no-underline text-cyan-400 hover:text-cyan-500 mb-1">
+              Главная
+          </a>
         <div class="d-flex flex-column flex-1 justify-content-center">
           <div class="success-icon text-center mb-3">
             <i class="mdi mdi-checkbox-marked-circle-outline"></i>
@@ -49,7 +51,9 @@
   </div>
 </div>
 
+  <script id="tokenEl" type="application/json" th:utext="${token}"></script>
 <!-- JavaScripts -->
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/token.js}"></script>
 </body>
 </html>

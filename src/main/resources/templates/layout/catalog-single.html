@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<!-- backtotop - start -->
+<!--<div class="xb-backtotop">-->
+<!--    <a href="shop-single.html#" class="scroll">-->
+<!--        <i class="far fa-arrow-up"></i>-->
+<!--    </a>-->
+<!--</div>-->
+<!-- backtotop - end -->
+
+<!-- preloader start -->
+
+<!-- preloader end -->
+
+<!-- header start -->
+
+<!-- header end -->
+
+<!-- overlay menu start -->
+
+<!-- overlay menu end -->
+
+<!-- main area start  -->
+<main th:fragment="main">
+    <div class="body_wrap">
+        <!-- breadcrumb start  -->
+        <section class="breadcrumb pt-10 pb-40">
+            <div class="container">
+                <div class="breadcrumb__content text-center">
+                    <h2 class="breadcrumb__title" th:text="${instrument.getTypeString()}"></h2>
+                    <ul class="breadcrumb__list">
+                        <li class="breadcrumb-item"><a th:href="@{/invest/home}">Главная</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/invest/catalog/all}">Каталог</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <!-- breadcrumb end  -->
+
+        <!-- shop single start -->
+        <section class="shop-single-section pt-30 pb-90">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="product-single-wrap mb-30">
+                            <div class="product_details_img ">
+                                <div class="tab-content" id="myTabContent">
+                                    <div class="tab-pane show active" id="home" role="tabpanel"
+                                         aria-labelledby="home-tab">
+                                        <div class="pl_thumb">
+                                            <a th:if="${instrument.getBrand() != null}"
+                                               th:href="@{/invest/shop-single(id=${instrument.uid})}">
+                                                <img th:src="@{'//invest-brands.cdn-tinkoff.ru/' +
+                                                         ${instrument.getBrand().getLogo()} + 'x640' + ${instrument.getBrand().getLogoExt()}}"
+                                                     alt=""
+                                                     onerror="this.onerror=null; this.src='/img/shop/noLogo.jpg';">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!--                                    <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">-->
+                                    <!--                                        <div class="pl_thumb">-->
+                                    <!--                                            <img src="assets/img/shop/product-single2.jpg" alt="">-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+                                    <!--                                    <div class="tab-pane" id="contact" role="tabpanel" aria-labelledby="contact-tab">-->
+                                    <!--                                        <div class="pl_thumb">-->
+                                    <!--                                            <img src="assets/img/shop/product-single3.jpg" alt="">-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+                                    <!--                                    <div class="tab-pane" id="profile2" role="tabpanel" aria-labelledby="profile-tab3">-->
+                                    <!--                                        <div class="pl_thumb">-->
+                                    <!--                                            <img src="assets/img/shop/product-single4.jpg" alt="">-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 product-details-col">
+                        <div class="product-details mb-30">
+                            <h2 th:text="${instrument.getName()}"></h2>
+                            <div class="rating">
+                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star"></i>
+                                <!--                                <span>(2 Customer review)</span>-->
+                            </div>
+                            <div class="price">
+                                <span class="current" th:text="${instrument.getPriceString()}"></span>
+                            </div>
+                            <p>Introducing our stunning collection of device mockups in brutal stylish
+                                environments. Immerse your designs in trend-setting visuals with our 16 high-
+                                resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, andSketch
+                                formats, these mockups will transform your UI/UX projects into works of art.
+                                Elevate your creativity and captivate your audience.</p>
+
+                            <div class="product-option">
+                                <form class="form">
+                                    <div class="product-row">
+                                        <!--                                        <div>-->
+                                        <!--                                            <input class="product-count" type="text" value="1" name="product-count">-->
+                                        <!--                                        </div>-->
+                                        <div class="add-to-cart-btn">
+                                            <button class="xb-btn"><i class="far fa-shopping-bag"></i>В избранное
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="thb-product-meta-after mt-20">
+                                <div class="product_meta">
+                                    <!--                                    <span class="posted_in">Categories: <a href="shop-single.html#!">Samsung</a>, <a href="shop-single.html#!">Apple</a>, <a href="shop-single.html#!">Huawei</a></span>-->
+                                    <!--                                    <span class="tagged_as">Tags: <a href="shop-single.html#!">Button</a>, <a href="shop-single.html#!">Red</a>, <a href="shop-single.html#!">Tshirt</a></span>-->
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div> <!-- end col -->
+                </div> <!-- end row -->
+
+                <div class="row">
+                    <div class="col col-xs-12">
+                        <div class="single-product-info">
+                            <!-- Nav tabs -->
+                            <!--                            <div class="tablist">-->
+                            <!--                                <ul class="nav nav-tabs" id="pills-tab" role="tablist">-->
+                            <!--                                    <li><button  class="active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#tb-01">Product Details</button></li>-->
+                            <!--                                    <li><button id="tab-two" data-bs-toggle="pill" data-bs-target="#tb-02">Additional imformation</button></li>-->
+                            <!--                                    <li><button  id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#tb-03">Review (09)</button></li>-->
+                            <!--                                </ul>-->
+                            <!--                            </div>-->
+
+                            <!-- Tab panes -->
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="tb-01">
+                                    <p>Introducing our stunning collection of device mockups in brutal stylish
+                                        environments. Immerse your designs in trend-setting visuals with our 16 high-
+                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and
+                                        Sketch formats, these mockups will transform your UI/UX projects into works of
+                                        art.
+                                        Elevate your creativity and captivate your audience with our ultra-realistic
+                                        mockups.</p>
+                                    <p> Immerse your designs in trend-setting visuals with our 16 high-
+                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and
+                                        Sketch formats, these mockups will transform your UI/UX projects into works of
+                                        art.
+                                        Elevate your creativity and captivate your audience with our ultra-realistic
+                                        mockups.</p>
+                                </div>
+                                <div class="tab-pane fade" id="tb-02">
+                                    <p>Introducing our stunning collection of device mockups in brutal stylish
+                                        environments. Immerse your designs in trend-setting visuals with our 16 high-
+                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and
+                                        Sketch formats, these mockups will transform your UI/UX projects into works of
+                                        art.
+                                        Elevate your creativity and captivate your audience with our ultra-realistic
+                                        mockups.</p>
+                                    <p> Immerse your designs in trend-setting visuals with our 16 high-
+                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and
+                                        Sketch formats, these mockups will transform your UI/UX projects into works of
+                                        art.
+                                        Elevate your creativity and captivate your audience with our ultra-realistic
+                                        mockups.</p>
+                                </div>
+                                <!--                                <div class="tab-pane fade" id="tb-03">-->
+                                <!--                                    <div class="row">-->
+                                <!--                                        <div class="col-lg-6 col-sm-12 col-xs-12">-->
+                                <!--                                            <div class="client-rv">-->
+                                <!--                                                <div class="client-pic">-->
+                                <!--                                                    <img src="assets/img/avatar/shop_avatar1.jpg" alt>-->
+                                <!--                                                </div>-->
+                                <!--                                                <div class="details">-->
+                                <!--                                                    <div class="name-rating-time">-->
+                                <!--                                                        <div class="name-rating">-->
+                                <!--                                                            <div>-->
+                                <!--                                                                <h4>Mice</h4>-->
+                                <!--                                                            </div>-->
+                                <!--                                                            <div class="rating">-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                            </div>-->
+                                <!--                                                        </div>-->
+                                <!--                                                        <div class="time">-->
+                                <!--                                                            <span>1 day ago</span>-->
+                                <!--                                                        </div>-->
+                                <!--                                                    </div>-->
+                                <!--                                                    <div class="review-body">-->
+                                <!--                                                        <p>Helplessly as he looked What's happened to me he thought. It wasn't a dreamtrated magazine and housed in a nice, gilded frame. It showed a lady fitted</p>-->
+                                <!--                                                    </div>-->
+                                <!--                                                </div>-->
+                                <!--                                            </div>-->
+
+                                <!--                                            <div class="client-rv">-->
+                                <!--                                                <div class="client-pic">-->
+                                <!--                                                    <img src="assets/img/avatar/shop_avatar2.jpg" alt>-->
+                                <!--                                                </div>-->
+                                <!--                                                <div class="details">-->
+                                <!--                                                    <div class="name-rating-time">-->
+                                <!--                                                        <div class="name-rating">-->
+                                <!--                                                            <div>-->
+                                <!--                                                                <h4>Hone</h4>-->
+                                <!--                                                            </div>-->
+                                <!--                                                            <div class="rating">-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                            </div>-->
+                                <!--                                                        </div>-->
+                                <!--                                                        <div class="time">-->
+                                <!--                                                            <span>1 day ago</span>-->
+                                <!--                                                        </div>-->
+                                <!--                                                    </div>-->
+                                <!--                                                    <div class="review-body">-->
+                                <!--                                                        <p>Helplessly as he looked What's happened to me he thought. It wasn't a dreamtrated magazine and housed in a nice, gilded frame. It showed a lady fitted</p>-->
+                                <!--                                                    </div>-->
+                                <!--                                                </div>-->
+                                <!--                                            </div>-->
+
+                                <!--                                            <div class="client-rv">-->
+                                <!--                                                <div class="client-pic">-->
+                                <!--                                                    <img src="assets/img/avatar/shop_avatar3.jpg" alt>-->
+                                <!--                                                </div>-->
+                                <!--                                                <div class="details">-->
+                                <!--                                                    <div class="name-rating-time">-->
+                                <!--                                                        <div class="name-rating">-->
+                                <!--                                                            <div>-->
+                                <!--                                                                <h4>Piloa</h4>-->
+                                <!--                                                            </div>-->
+                                <!--                                                            <div class="rating">-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                                <i class="fi flaticon-star"></i>-->
+                                <!--                                                            </div>-->
+                                <!--                                                        </div>-->
+                                <!--                                                        <div class="time">-->
+                                <!--                                                            <span>2 days ago</span>-->
+                                <!--                                                        </div>-->
+                                <!--                                                    </div>-->
+                                <!--                                                    <div class="review-body">-->
+                                <!--                                                        <p>Helplessly as he looked What's happened to me he thought. It wasn't a dreamtrated magazine and housed in a nice, gilded frame. It showed a lady fitted</p>-->
+                                <!--                                                    </div>-->
+                                <!--                                                </div>-->
+                                <!--                                            </div>-->
+                                <!--                                        </div> &lt;!&ndash; end col &ndash;&gt;-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- end row -->
+
+            <!-- end of container -->
+        </section>
+        <!-- shop single start -->
+    </div>
+</main>
+<!-- main area end  -->
+
+<!-- footer start -->
+<!-- footer start -->
+
+<!-- jquery include -->
+
+</body>
+
+</html>
