@@ -1,13 +1,12 @@
 package com.example.demo.model;
 
 import com.example.demo.entity.Role;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 public class Token {
     private String token;
     private String loginResult;
     private Role role;
+    private String username;
 
     public void setRole(Role role) {
         this.role = role;
@@ -17,10 +16,11 @@ public class Token {
         return role;
     }
 
-    public Token(String token, String loginResult, Role role) {
+    public Token(String token, String loginResult, Role role, String username) {
         this.token = token;
         this.loginResult = loginResult;
         this.role = role;
+        this.username = username;
     }
 
     public Token(String loginResult) {
@@ -41,5 +41,13 @@ public class Token {
 
     public void setLoginResult(String loginResult) {
         this.loginResult = loginResult;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 }

@@ -1,10 +1,12 @@
 package com.example.demo.utils;
 
 
-import com.example.demo.dto.InstrumentsResponse;
-import com.example.demo.dto.InstrumentsRequest;
-import com.example.demo.dto.LastPricesRequest;
-import com.example.demo.dto.LastPricesResponse;
+import com.example.demo.dto.InstrumentType;
+import com.example.demo.dto.request.AssetRequest;
+import com.example.demo.dto.request.AssetsRequest;
+import com.example.demo.dto.request.InstrumentsRequest;
+import com.example.demo.dto.request.LastPricesRequest;
+import com.example.demo.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
@@ -27,14 +29,12 @@ public class RestUtils {
         String url = env.getProperty("tbank.api.base.url") +
                 "/tinkoff.public.invest.api.contract.v1.InstrumentsService/Bonds";
 
-        System.out.println(url);
         InstrumentsRequest requestBody = new InstrumentsRequest();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
-        System.out.println(env.getProperty("tbank.token"));
 
         HttpEntity<InstrumentsRequest> requestEntity = new HttpEntity<>(requestBody, headers);
 
@@ -52,15 +52,11 @@ public class RestUtils {
         String url = env.getProperty("tbank.api.base.url") +
                 "/tinkoff.public.invest.api.contract.v1.InstrumentsService/Shares";
 
-        System.out.println(url);
         InstrumentsRequest requestBody = new InstrumentsRequest();
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
-        System.out.println(env.getProperty("tbank.token"));
-
         HttpEntity<InstrumentsRequest> requestEntity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<InstrumentsResponse> result = restTemplateLong.exchange(
@@ -76,7 +72,6 @@ public class RestUtils {
         String url = env.getProperty("tbank.api.base.url") +
                 "/tinkoff.public.invest.api.contract.v1.MarketDataService/GetLastPrices";
 
-        System.out.println(url);
         LastPricesRequest requestBody = new LastPricesRequest();
         requestBody.setInstrumentId(uids);
 
@@ -84,8 +79,6 @@ public class RestUtils {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
-        System.out.println(env.getProperty("tbank.token"));
-
         HttpEntity<LastPricesRequest> requestEntity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<LastPricesResponse> result = restTemplateLong.exchange(
@@ -97,19 +90,82 @@ public class RestUtils {
         return result;
     }
 
+    public ResponseEntity<InstrumentResponse> getBondByUid(String uid){
+        String url = env.getProperty("tbank.api.base.url") +
+                "/tinkoff.public.invest.api.contract.v1.InstrumentsService/BondBy";
+
+        InstrumantByUidRequest requestBody = new InstrumantByUidRequest();
+        requestBody.setId(uid);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
+        HttpEntity<InstrumantByUidRequest> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<InstrumentResponse> result = restTemplateLong.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                InstrumentResponse.class
+        );
+        return result;
+    }
+
+    public ResponseEntity<InstrumentResponse> getCurrencyByUid(String uid){
+        String url = env.getProperty("tbank.api.base.url") +
+                "/tinkoff.public.invest.api.contract.v1.InstrumentsService/CurrencyBy";
+
+        InstrumantByUidRequest requestBody = new InstrumantByUidRequest();
+        requestBody.setId(uid);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
+        HttpEntity<InstrumantByUidRequest> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<InstrumentResponse> result = restTemplateLong.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                InstrumentResponse.class
+        );
+        return result;
+    }
+
+    public ResponseEntity<InstrumentResponse> getShareByUid(String uid){
+        String url = env.getProperty("tbank.api.base.url") +
+                "/tinkoff.public.invest.api.contract.v1.InstrumentsService/ShareBy";
+
+        InstrumantByUidRequest requestBody = new InstrumantByUidRequest();
+        requestBody.setId(uid);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
+        HttpEntity<InstrumantByUidRequest> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<InstrumentResponse> result = restTemplateLong.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                InstrumentResponse.class
+        );
+        return result;
+    }
+
     public ResponseEntity<InstrumentsResponse> getAllCurrencies() {
         String url = env.getProperty("tbank.api.base.url") +
                 "/tinkoff.public.invest.api.contract.v1.InstrumentsService/Currencies";
 
-        System.out.println(url);
         InstrumentsRequest requestBody = new InstrumentsRequest();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
-        System.out.println(env.getProperty("tbank.token"));
-
         HttpEntity<InstrumentsRequest> requestEntity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<InstrumentsResponse> result = restTemplateLong.exchange(
@@ -121,58 +177,87 @@ public class RestUtils {
         return result;
     }
 
-//    public ResponseEntity<CoinPriceApiResponse> price(List<String> idsList) {
-//        ResponseEntity<CoinApiResponse> response;
-//        CoinPriceApiResponse result = new CoinPriceApiResponse();
-//
-//        for (String id : idsList) {
-//            String url = env.getProperty("coin.api.base.url") + "coins/" + id;
-//            response = restTemplateLong.getForEntity(url, CoinApiResponse.class);
-//            if (response.getStatusCode().is2xxSuccessful()) {
-//                CoinApiResponse coin = response.getBody();
-//                if (coin != null) {
-//                    result.add(id, coin.getSymbol(), coin.getName(), coin.getMarketData().getCurrentPrice());
-//                }
-//            }
-//        }
-//
-//        if (!result.isEmpty()) {
-//            return ResponseEntity.ok(result);
-//        } else {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
-//
-//    public ResponseEntity<TopCoinApiResponse[]> top(Integer limit) {
-//        String url = env.getProperty("coin.api.base.url") +
-//                "coins/markets?vs_currency=usd&order=market_cap_desc&per_page=" + limit + "&page=1";
-//        return restTemplateLong.getForEntity(url, TopCoinApiResponse[].class);
-//    }
-//
-//    public ResponseEntity<CoinApiResponse> search(String query) {
-//        String url = env.getProperty("coin.api.base.url") + "coins/" + query;
-//        return restTemplateLong.getForEntity(url, CoinApiResponse.class);
-//    }
-//
-//    public ResponseEntity<CryptoCompareResponse> compare(List<String> idsList) {
-//        ResponseEntity<CoinApiResponse> response;
-//
-//        CryptoCompareResponse result = new CryptoCompareResponse();
-//        for (String id : idsList) {
-//            String url = env.getProperty("coin.api.base.url") + "coins/" + id;
-//            response = restTemplateLong.getForEntity(url, CoinApiResponse.class);
-//            if (response.getStatusCode().is2xxSuccessful()) {
-//                CoinApiResponse coin = response.getBody();
-//                if (coin != null) {
-//                    result.add(coin);
-//                }
-//            }
-//        }
-//
-//        if (!result.getCryptos().isEmpty()) {
-//            return ResponseEntity.ok(result);
-//        } else {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
+    public ResponseEntity<AssetResponse> getAssetByUid(String id) {
+        String url = env.getProperty("tbank.api.base.url") +
+                "/tinkoff.public.invest.api.contract.v1.InstrumentsService/GetAssetBy";
+
+        AssetRequest requestBody = new AssetRequest(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
+        HttpEntity<AssetRequest> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<AssetResponse> result = restTemplateLong.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                AssetResponse.class
+        );
+        return result;
+    }
+
+    public ResponseEntity<AssetsResponse> getAllAssetsBonds() {
+        String url = env.getProperty("tbank.api.base.url") +
+                "/tinkoff.public.invest.api.contract.v1.InstrumentsService/GetAssets";
+
+        AssetsRequest requestBody = new AssetsRequest(InstrumentType.INSTRUMENT_TYPE_BOND);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
+        HttpEntity<AssetsRequest> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<AssetsResponse> result = restTemplateLong.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                AssetsResponse.class
+        );
+        return result;
+    }
+
+    public ResponseEntity<AssetsResponse> getAllAssetsShares() {
+        String url = env.getProperty("tbank.api.base.url") +
+                "/tinkoff.public.invest.api.contract.v1.InstrumentsService/GetAssets";
+
+        AssetsRequest requestBody = new AssetsRequest(InstrumentType.INSTRUMENT_TYPE_SHARE);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
+        HttpEntity<AssetsRequest> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<AssetsResponse> result = restTemplateLong.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                AssetsResponse.class
+        );
+        return result;
+    }
+
+    public ResponseEntity<AssetsResponse> getAllAssetsCurrencies() {
+        String url = env.getProperty("tbank.api.base.url") +
+                "/tinkoff.public.invest.api.contract.v1.InstrumentsService/GetAssets";
+
+        AssetsRequest requestBody = new AssetsRequest(InstrumentType.INSTRUMENT_TYPE_CURRENCY);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
+        HttpEntity<AssetsRequest> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<AssetsResponse> result = restTemplateLong.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                AssetsResponse.class
+        );
+        return result;
+    }
 }

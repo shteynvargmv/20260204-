@@ -1,24 +1,16 @@
 package com.example.demo.entity;
 
-import com.example.demo.model.CurrencySymbol;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
+import org.hibernate.annotations.DynamicUpdate;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
-import java.text.SimpleDateFormat;
 
 @Entity
+@DynamicUpdate
 public class Instrument {
     @Id
     @Column(name = "uid", length = 36)
@@ -47,6 +39,11 @@ public class Instrument {
 
     private int lastPriceUnits; // целая часть
     private int lastPriceNano; //представления дробной части (копеек * 1_000_000_000)
+
+    private String brCodeName;
+    @Column(length = 1000) // Или
+    private String description;
+    private String nameLong;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "brand_id", referencedColumnName = "id")
@@ -310,8 +307,6 @@ public class Instrument {
         return isin;
     }
 
-
-
     public void setTypeString(String typeString) {
         this.typeString = typeString;
     }
@@ -324,7 +319,53 @@ public class Instrument {
         this.updateDateString = updateDateString;
     }
 
+    public String getBrCodeName() {
+        return brCodeName;
+    }
+
+    public void setBrCodeName(String brCodeName) {
+        this.brCodeName = brCodeName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getNameLong() {
+        return nameLong;
+    }
+
+    public void setNameLong(String nameLong) {
+        this.nameLong = nameLong;
+    }
+
     public String getPriceString() {
+        int units = lastPriceUnits;
+        int nano = lastPriceNano;
+
+        String curr;
+        int decimalDigits;
+        CurrencySymbol symbol = getSymbol();
+        if (symbol != null){
+            decimalDigits = symbol.getDecimalDigits();
+            curr = getSymbol().getSymb();
+        } else {
+            decimalDigits = 3;
+            curr = nominalCurrency.toUpperCase();
+        }
+        BigDecimal total = new BigDecimal(units).add(
+                        new BigDecimal(nano).divide(new BigDecimal("1000000000")))
+                .setScale(decimalDigits, RoundingMode.HALF_UP);
+
+        if ( this.bond != null ) {
+            total = total.multiply(BigDecimal.TEN);
+        }
+
+        priceString = total + " " + curr;
         return priceString;
     }
 
@@ -334,32 +375,6 @@ public class Instrument {
 
     @PostLoad
     private void formString() {
-        if (nominalCurrency == null || nominalCurrency.isEmpty()) {
-            priceString = "";
-        }
-
-        int units = lastPriceUnits;
-        int nano = lastPriceNano;
-        if ( this.bond != null ) {
-            units *= 10;
-            nano *= 10;
-        }
-
-        String curr;
-        int rounding;
-        CurrencySymbol symbol = getSymbol();
-        if (symbol != null){
-            rounding = symbol.getRounding();
-            curr = getSymbol().getSymb();
-        } else {
-            rounding = 3;
-            curr = nominalCurrency.toUpperCase();
-        }
-        BigDecimal total = new BigDecimal(units).add(
-                new BigDecimal(nano).divide(new BigDecimal("1000000000")))
-                        .setScale(rounding, RoundingMode.HALF_UP);
-
-        priceString = total + " " + curr;
 
         updateDateString = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(updateDate);
 
@@ -373,6 +388,5 @@ public class Instrument {
             typeString = "Валюта";
         }
     }
-
 
 }

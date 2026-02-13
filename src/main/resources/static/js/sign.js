@@ -4,12 +4,13 @@ async function register(element) {
     let email = document.querySelector('#email');
     const result = document.getElementById('result');
     console.log(username.value, password.value, email.value)
+    let role = localStorage.getItem('role');
 
     let body = JSON.stringify({
         username: username.value,
         password: password.value,
         email: email.value,
-        role: 0
+        role: role === 'ADMIN' ? 1 : 0
     })
     try {
         const response = await fetch('/auth/register', {
@@ -24,12 +25,16 @@ async function register(element) {
             const data = await response.json();
             console.log(data)
             if (data.created) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('role');
-                window.location.href = '/invest/sign-in';
+                if (role !== 'ADMIN') {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('role');
+                }
+                result.textContent = `Успешно зарегистрирован`;
             } else {
-                localStorage.removeItem('token');
-                localStorage.removeItem('role');
+                if (role !== 'ADMIN') {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('role');
+                }
                 result.textContent = `${data.registerResult}`;
             }
         }
@@ -46,7 +51,7 @@ async function login(element) {
 
     let body = JSON.stringify({
         username: username.value,
-        password: password.value,
+        password: password.value
     })
 
     try {
@@ -63,8 +68,10 @@ async function login(element) {
 
         if (response.ok) {
             if (data.token) {
+                console.log(data.username);
                 localStorage.setItem('role', data.role);
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('username', data.username);
                 window.location.href = '/invest/home';
             } else {
                 result.textContent = data.loginResult;
@@ -72,14 +79,25 @@ async function login(element) {
         } else {
             localStorage.removeItem('token');
             localStorage.removeItem('role');
+            localStorage.removeItem('username');
             result.textContent = data.loginResult;
         }
     } catch (error) {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+        localStorage.removeItem('username');
         result.textContent = 'Ошибка сети или сервера';
     }
 }
+
+document.getElementById('password-addon').addEventListener('click', function () {
+    let passwordInput = document.getElementById("password");
+    if (passwordInput.type == "password") {
+        passwordInput.type = "text";
+    } else {
+        passwordInput.type = "password";
+    }
+});
 
 // async function login(element) {
 //     let username = document.querySelector('#username');
@@ -139,19 +157,21 @@ async function login(element) {
 async function logout(element) {
 
     let token = localStorage.getItem('token');
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
     if (token) {
         const response = await fetch('/auth/logout', {
             method: 'POST',
             credentials: 'include'
         });
         if (response.ok) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            localStorage.removeItem('username');
             window.location.href = '/invest/logout/success';
         }
     } else {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+        localStorage.removeItem('username');
         window.location.href = '/invest/home';
     }
 

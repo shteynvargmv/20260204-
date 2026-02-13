@@ -38,7 +38,17 @@
 
 <!-- preloader start -->
 <div id="xb-loadding" class="xb-loader"><div class="loading-spin"></div></div>
-<!-- preloader end -->
+<div id="global-loader" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 99999; justify-content: center; align-items: center; flex-direction: column;">
+    <div style="width: 80px; height: 80px; border: 3px solid black; border-top: 3px solid #ccff00; border-right: 3px solid #ccff00; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <div style="color: #ccff00; margin-top: 20px; font-family: 'Roboto', sans-serif;">ОБНОВЛЕНИЕ ВЫПОЛНЯЕТСЯ</div>
+</div>
+
+<style>
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style><!-- preloader end -->
 
 
 
@@ -108,6 +118,8 @@
 <script th:src="@{/js/main.js}"></script>
 <script th:src="@{/js/token.js}"></script>
 <script th:src="@{/js/sign.js}"></script>
+<script th:src="@{/js/refresh.js}"></script>
+<script th:src="@{/js/scroll.js}"></script>
 
 </body>
 

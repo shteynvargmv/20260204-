@@ -58,13 +58,24 @@
                                                 (param.sort != null && param.sort[0] == 'name_desc')}">
                                             <a class="justify-content-end">Название: по убыванию</a>
                                         </option>
-                                        <option value="nominalUnits_nominalNano_asc"
-                                                th:selected="${sort == 'nominalUnits_nominalNano_asc' ||
-                                                (param.sort != null && param.sort[0] == 'nominalUnits_nominalNano_asc')}">
+                                        <option value="ticker_asc"
+                                                th:selected="${sort == 'ticker_asc' ||
+                                                (param.sort != null && param.sort[0] == 'ticker_asc')}">
+                                            Тикер: по возрастанию
+                                        </option>
+                                        <option value="ticker_desc"
+                                                th:selected="${sort == 'ticker_desc' ||
+                                                (param.sort != null && param.sort[0] == 'ticker_desc')}">
+                                            <a class="justify-content-end">Тикер: по убыванию</a>
+                                        </option>
+
+                                        <option value="nominalCurrency_lastPriceUnits_lastPriceNano_asc"
+                                                th:selected="${sort == 'nominalCurrency_lastPriceUnits_lastPriceNano_asc' ||
+                                                (param.sort != null && param.sort[0] == 'nominalCurrency_lastPriceUnits_lastPriceNano_asc')}">
                                             Цена: по возрастанию
                                         </option>
-                                        <option value="nominalUnits_nominalNano_desc"
-                                                th:selected="${sort == 'nominalUnits_nominalNano_desc' || (param.sort != null && param.sort[0] == 'nominalUnits_nominalNano_desc')}">
+                                        <option value="nominalCurrency_lastPriceUnits_lastPriceNano_desc"
+                                                th:selected="${sort == 'nominalCurrency_lastPriceUnits_lastPriceNano_desc' || (param.sort != null && param.sort[0] == 'nominalCurrency_lastPriceUnits_lastPriceNano_desc')}">
                                             Цена: по убыванию
                                         </option>
                                     </select>
@@ -113,10 +124,14 @@
                                                     <a class="xb-btn" href="shop-single.html"><i
                                                             class="far fa-shopping-bag"></i>В избранное</a>
                                                 </div>
-                                                <div class="product--holder">
-                                                    <div class="product-details text-end me-0 p-2" th:style="'transform: scale(0.7);'"
-                                                           th:href="@{/invest/catalog-single/{uid}(uid=${instrument.uid})}"
-                                                           th:text="${instrument.updateDateString}"></div>
+
+                                                <!--                                                    <div class="product-details text-end me-0 p-2" th:style="'transform: scale(0.7);'"-->
+
+                                                <div class="product--holder mt-1 pe-0 pt-0">
+                                                    <div class="product-details text-end me-0 p-0"
+                                                         th:style="'transform: scale(0.7); margin-left: auto; width: fit-content;'"
+                                                         th:href="@{/invest/catalog-single/{uid}(uid=${instrument.uid})}"
+                                                         th:text="${instrument.updateDateString}"></div>
                                                     <h3 class="product--title">
                                                         <a th:href="@{/invest/catalog-single/{uid}(uid=${instrument.uid})}"
                                                            th:text="${instrument.name}"></a>

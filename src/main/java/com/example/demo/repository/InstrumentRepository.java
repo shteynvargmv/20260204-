@@ -14,6 +14,8 @@ import java.util.Optional;
 
 @Repository
 public interface InstrumentRepository extends JpaRepository<Instrument, String> {
+    Instrument save(Instrument instrument);
+
     @Query("SELECT i FROM Instrument i " +
             "WHERE " +
             "(:forQualInvestorFlag = false OR i.forQualInvestorFlag != :forQualInvestorFlag) AND " +
@@ -87,4 +89,5 @@ public interface InstrumentRepository extends JpaRepository<Instrument, String> 
     Page<Instrument> findByCurrencyIsNotNull(Pageable pageable);
 
     Optional<Instrument> findFirstByUid(String uid);
+
 }

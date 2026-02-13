@@ -1,17 +1,17 @@
 package com.example.demo.service.implementations;
 
 import com.example.demo.controller.HomeController;
+import com.example.demo.dto.AssetDto;
 import com.example.demo.dto.InstrumentDto;
 import com.example.demo.dto.LastPriceDto;
 import com.example.demo.dto.QuotationDto;
 import com.example.demo.entity.*;
-import com.example.demo.model.Currencies;
-import com.example.demo.model.CurrencyData;
-import com.example.demo.model.CurrencySymbol;
+import com.example.demo.entity.CurrencySymbol;
 import com.example.demo.model.Filter;
 import com.example.demo.repository.InstrumentRepository;
 import com.example.demo.repository.BondRepository;
 import com.example.demo.repository.ShareRepository;
+import com.example.demo.service.CurrencyService;
 import com.example.demo.service.DBService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,7 +25,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -36,25 +35,19 @@ import java.util.stream.Stream;
 public class InstrumentService implements DBService {
     @Autowired
     InstrumentRepository instrumentRepository;
-
     @Autowired
     BondRepository bondRepository;
-
     @Autowired
     ShareRepository shareRepository;
-
     @Autowired
     BondRepository brandRepository;
-
     @Autowired
     @Qualifier("restTemplateLong")
     private RestTemplate restTemplate;
-
     @Autowired
     Environment env;
-
     @Autowired
-    Currencies currencies;
+    CurrencyService currencyService;
 
     @Override
     public Page<Instrument> findAll(int page, Sort sort) {
@@ -87,9 +80,18 @@ public class InstrumentService implements DBService {
 
     @Override
     public Instrument dtoToEntity(InstrumentDto dto, List<LastPriceDto> prices) {
+        return dtoToEntity(dto, prices, new AssetDto());
+    }
+
+    @Override
+    public Instrument dtoToEntity(InstrumentDto dto, List<LastPriceDto> prices, AssetDto asset) {
         Instrument instrument = new Instrument();
         instrument.setUid(dto.getUid());
         instrument.setAssetUid(dto.getAssetUid());
+        instrument.setName(dto.getName());
+        instrument.setNameLong(asset.getName());
+        instrument.setDescription(asset.getDescription());
+        instrument.setBrCodeName(asset.getBrCodeName());
         instrument.setLot(dto.getLot());
         instrument.setSellAvailableFlag(dto.isSellAvailableFlag());
         instrument.setBuyAvailableFlag(dto.isBuyAvailableFlag());
@@ -98,12 +100,13 @@ public class InstrumentService implements DBService {
         instrument.setTicker(dto.getTicker());
         instrument.setForQualInvestorFlag(dto.isForQualInvestorFlag());
         instrument.setPositionUid(dto.getPositionUid());
-        instrument.setName(dto.getName());
         instrument.setExchange(dto.getExchange());
         instrument.setCountryOfRisk(dto.getCountryOfRisk());
         instrument.setCountryOfRiskName(dto.getCountryOfRiskName());
         instrument.setIsin(dto.getIsin());
-        instrument.setNominalCurrency(dto.getNominal().getCurrency());
+        instrument.setNominalCurrency(!dto.getCurrency().equals("") ?
+                dto.getCurrency() :
+                dto.getNominal().getCurrency());
         instrument.setNominalUnits(dto.getNominal().getUnits());
         instrument.setNominalNano(dto.getNominal().getNano());
         QuotationDto price = prices.stream()
@@ -114,8 +117,10 @@ public class InstrumentService implements DBService {
         if (price != null){
             instrument.setLastPriceUnits(Integer.parseInt(price.getUnits()));
             instrument.setLastPriceNano(price.getNano());
+        } else {
+            return null;
         }
-      if (dto.getInstrumentType().equals("currency") &&
+        if (dto.getInstrumentType().equals("currency") &&
               instrument.getLastPriceUnits() == 0)  {
           instrument.setLastPriceUnits(1);
         }
@@ -128,23 +133,26 @@ public class InstrumentService implements DBService {
                 .atZone(ZoneId.systemDefault())
                 .toInstant()));
 
-        Optional<CurrencyData> currencyDataOpt = currencies.getCurrencyDataList()
-                .stream()
-                .filter(x -> x.getCode().equals(dto.getNominal().getCurrency().toUpperCase()))  // Используйте equals()
-                .findFirst();
-        if (currencyDataOpt.isPresent()){
-            CurrencyData currencyData = currencyDataOpt.get();
-            CurrencySymbol currencySymbol = new CurrencySymbol();
-            currencySymbol.setName(currencyData.getName());
-            currencySymbol.setSymbolNative(currencyData.getSymbol_native());
-            currencySymbol.setDecimalDigits(currencyData.getDecimal_digits());
-            currencySymbol.setRounding(currencyData.getRounding());
-            currencySymbol.setCode(currencyData.getCode());
-            currencySymbol.setNamePlural(currencyData.getName_plural());
-            currencySymbol.setSymb(currencyData.getSymbol());
-            System.out.println(currencySymbol.getSymb());
-            instrument.setSymbol(currencySymbol);
-        }
+        CurrencySymbol currencySymbol = currencyService.findByCode(instrument.getNominalCurrency().toUpperCase());
+        instrument.setSymbol(currencySymbol);
+
+//        Optional<CurrencyData> currencyDataOpt = currencies.getCurrencyDataList()
+//                .stream()
+//                .filter(x -> x.getCode().equals(dto.getNominal().getCurrency().toUpperCase()))  // Используйте equals()
+//                .findFirst();
+//        if (currencyDataOpt.isPresent()){
+//            CurrencyData currencyData = currencyDataOpt.get();
+//            CurrencySymbol currencySymbol = new CurrencySymbol();
+//            currencySymbol.setName(currencyData.getName());
+//            currencySymbol.setSymbolNative(currencyData.getSymbol_native());
+//            currencySymbol.setDecimalDigits(currencyData.getDecimal_digits());
+//            currencySymbol.setRounding(currencyData.getRounding());
+//            currencySymbol.setCode(currencyData.getCode());
+//            currencySymbol.setNamePlural(currencyData.getName_plural());
+//            currencySymbol.setSymb(currencyData.getSymbol());
+//            System.out.println(currencySymbol.getSymb());
+//            instrument.setSymbol(currencySymbol);
+//        }
 
         switch (dto.getInstrumentType()) {
             case "share" -> {
@@ -193,6 +201,13 @@ public class InstrumentService implements DBService {
             }
         }
         return instrument;
+    }
+    @Override
+    public Instrument dtoToEntity(InstrumentDto dto, List<LastPriceDto> prices, List<AssetDto> assets) {
+        AssetDto asset = assets.stream().filter(x -> x.getUid().equals(dto.getAssetUid()))
+                .findFirst()
+                .orElse(new AssetDto());
+        return dtoToEntity(dto,prices,asset);
     }
 
     @Override
@@ -323,6 +338,11 @@ public class InstrumentService implements DBService {
     public Instrument findFirstByUid(String uid) {
         Optional<Instrument> instrumentOpt = instrumentRepository.findFirstByUid(uid);
         return instrumentOpt.orElse(null);
+    }
+
+    @Override
+    public Instrument save(Instrument instrument) {
+        return instrumentRepository.save(instrument);
     }
 
 

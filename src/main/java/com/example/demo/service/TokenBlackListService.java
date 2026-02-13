@@ -1,17 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.TokenBlackList;
-import com.example.demo.jwt.JwtUtil;
 import com.example.demo.repository.TokenBlackListRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 public class TokenBlackListService{
@@ -23,8 +15,9 @@ public class TokenBlackListService{
         return tokenBlackListRepository.deleteByToken(token);
     }
 
-    public TokenBlackList logout(String token) {
-        return tokenBlackListRepository.save(new TokenBlackList(token));
+    public Boolean logout(String token) {
+        TokenBlackList tokenBlackListNew = tokenBlackListRepository.save(new TokenBlackList(token));
+        return tokenBlackListNew.getToken().equals(token);
     }
 
     public TokenBlackList findFirstByToken(String token) {

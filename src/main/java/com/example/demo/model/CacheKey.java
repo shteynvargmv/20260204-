@@ -21,12 +21,6 @@ public class CacheKey{
     }
 
     @Override
-    public String toString() {
-        return  "service='" + service + '\'' +
-                ", params=" + params;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         CacheKey cacheKey = (CacheKey) o;
@@ -36,5 +30,13 @@ public class CacheKey{
     @Override
     public int hashCode() {
         return Objects.hash(service, params);
+    }
+
+    @Override
+    public String toString() {
+        return "CacheKey{" +
+                "service='" + service + '\'' +
+                ", params=" + params +
+                '}';
     }
 }

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.getElementById('xb-loadding').style.display = 'none';document.addEventListener('DOMContentLoaded', function() {
     console.log('Menu script loaded');
 
     // Элементы меню

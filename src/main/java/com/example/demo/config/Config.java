@@ -1,8 +1,8 @@
 package com.example.demo.config;
 
+import com.example.demo.model.Cache;
 import com.example.demo.model.Currencies;
 import com.example.demo.model.CurrencyData;
-import com.example.demo.model.CurrencySymbol;
 import com.example.demo.service.CacheService;
 import com.example.demo.service.DBService;
 import com.example.demo.service.BrokerApiService;
@@ -25,27 +25,24 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
 public class Config {
 
     @Bean
-    public Currencies getCurrencySymbols(){
+    public Currencies getCurrencySymbols() {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            System.out.println("symbol error1 ");
             ClassPathResource resource = new ClassPathResource("static/json/currency.json");
-            System.out.println("symbol error2");
             try (InputStream inputStream = resource.getInputStream()) {
-                List<CurrencyData> currencyDataList = mapper.readValue(inputStream, new TypeReference<List<CurrencyData>>() {});
-                System.out.println(currencyDataList);
+                List<CurrencyData> currencyDataList = mapper.readValue(inputStream, new TypeReference<List<CurrencyData>>() {
+                });
                 return new Currencies(currencyDataList);
             }
 
-        } catch (IOException e){
-            System.out.println("symbol error " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Ошибка загрузки файла валют " + e.getMessage());
         }
         return new Currencies();
     }
@@ -122,18 +119,22 @@ public class Config {
     }
 
     @Bean(name = "tbank")
-    public BrokerApiService getApiService(){
+    public BrokerApiService getApiService() {
         return new TBankApiService();
     }
 
     @Bean(name = "instrument")
-    public DBService getDBService(){
+    public DBService getDBService() {
         return new InstrumentService();
     }
 
     @Bean(name = "simple")
-    public CacheService getCacheService(){
+    public CacheService getCacheService() {
         return new SimpleCacheService();
     }
 
+    @Bean
+    public Cache getCache() {
+        return new Cache();
+    }
 }

@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import java.util.Arrays;
+
 public class CacheData {
     CacheDataBody[] data;
     long time;
@@ -29,6 +31,14 @@ public class CacheData {
 
     public CacheDataBody[] getData() {
         return data;
+    }
+    @Override
+    public String toString() {
+        return "CacheData{" +
+                "data=" + Arrays.toString(data) +
+                ", time=" + time +
+                ", used=" + used +
+                '}';
     }
 }
 

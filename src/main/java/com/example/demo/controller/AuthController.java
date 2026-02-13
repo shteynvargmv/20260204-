@@ -1,13 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.TokenBlackList;
 import com.example.demo.model.Token;
 import com.example.demo.service.TokenBlackListService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,13 +13,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.request.AuthRequest;
 import com.example.demo.entity.User;
 import com.example.demo.jwt.JwtUtil;
 import com.example.demo.service.UserService;
-import com.example.demo.model.Register;
-
-import java.util.Optional;
+import com.example.demo.dto.response.RegisterResponse;
 
 @RestController
 @RequestMapping("/auth")
@@ -67,7 +62,7 @@ public class AuthController {
                 user.setRefreshToken(refreshToken);
                 user = userService.save(user);
                 jwtUtil.setCookie(user,response);
-                return new Token(token,"Вы успешно зарегистрированы", user.getRole());
+                return new Token(token,"Вы успешно зарегистрированы", user.getRole(), user.getUsername());
             } else {
                 jwtUtil.delCookie(response);
                 return new Token("Неверный логин или пароль");
@@ -80,9 +75,9 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseBody
-    public Register register(@RequestBody User user,
-                             HttpServletRequest request,
-                             HttpServletResponse response) {
+    public RegisterResponse register(@RequestBody User user,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response) {
         jwtUtil.setCookie(request,response);
         return userService.register(user);
     }
@@ -92,12 +87,12 @@ public class AuthController {
     public ResponseEntity<String> logout(HttpServletRequest request,
                                          HttpServletResponse response) {
         String token = jwtUtil.extractToken(request);
-        System.out.println(token);
         if (token != null && !token.trim().isEmpty()) {
             String username = jwtUtil.extractUsername(token);
             User user = userService.findByUsername(username);
             if (user != null) {
-                if (tokenBlackListService.logout(user.getToken()) != null) {
+                if (tokenBlackListService.logout(user.getToken()) &&
+                    userService.delRefreshToken(user)) {
                     jwtUtil.delCookie(response);
                     return ResponseEntity.ok("Успешно выполнено");
                 }
@@ -105,6 +100,5 @@ public class AuthController {
         }
         return ResponseEntity.notFound().build();
     }
-
 }
 

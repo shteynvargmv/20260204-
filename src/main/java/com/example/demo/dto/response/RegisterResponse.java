@@ -1,14 +1,14 @@
-package com.example.demo.model;
+package com.example.demo.dto.response;
 
-public class Register {
+public class RegisterResponse {
     private boolean created;
     private String registerResult;
 
-    public Register(boolean created) {
+    public RegisterResponse(boolean created) {
         this.created = created;
     }
 
-    public Register(String registerResult) {
+    public RegisterResponse(String registerResult) {
         this.registerResult = registerResult;
     }
 

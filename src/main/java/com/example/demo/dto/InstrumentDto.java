@@ -658,4 +658,66 @@ public class InstrumentDto {
     public String getIsoCurrencyName() {
         return isoCurrencyName;
     }
+
+    @Override
+    public String toString() {
+        return "InstrumentDto{" +
+                "assetUid='" + assetUid + '\'' +
+                ", figi='" + figi + '\'' +
+                ", dshortMin=" + dshortMin +
+                ", countryOfRisk='" + countryOfRisk + '\'' +
+                ", lot=" + lot +
+                ", uid='" + uid + '\'' +
+                ", requiredTests=" + requiredTests +
+                ", blockedTcaFlag=" + blockedTcaFlag +
+                ", dlong=" + dlong +
+                ", dlongClient=" + dlongClient +
+                ", nominal=" + nominal +
+                ", sellAvailableFlag=" + sellAvailableFlag +
+                ", currency='" + currency + '\'' +
+                ", first1dayCandleDate=" + first1dayCandleDate +
+                ", brand=" + brand +
+                ", buyAvailableFlag=" + buyAvailableFlag +
+                ", weekendFlag=" + weekendFlag +
+                ", classCode='" + classCode + '\'' +
+                ", ticker='" + ticker + '\'' +
+                ", forQualInvestorFlag=" + forQualInvestorFlag +
+                ", forIisFlag=" + forIisFlag +
+                ", positionUid='" + positionUid + '\'' +
+                ", apiTradeAvailableFlag=" + apiTradeAvailableFlag +
+                ", dlongMin=" + dlongMin +
+                ", shortEnabledFlag=" + shortEnabledFlag +
+                ", kshort=" + kshort +
+                ", first1minCandleDate=" + first1minCandleDate +
+                ", minPriceIncrement=" + minPriceIncrement +
+                ", otcFlag=" + otcFlag +
+                ", dshortClient=" + dshortClient +
+                ", klong=" + klong +
+                ", dshort=" + dshort +
+                ", name='" + name + '\'' +
+                ", exchange='" + exchange + '\'' +
+                ", countryOfRiskName='" + countryOfRiskName + '\'' +
+                ", isin='" + isin + '\'' +
+                ", callDate=" + callDate +
+                ", maturityDate=" + maturityDate +
+                ", placementPrice=" + placementPrice +
+                ", aciValue=" + aciValue +
+                ", initialNominal=" + initialNominal +
+                ", couponQuantityPerYear=" + couponQuantityPerYear +
+                ", floatingCouponFlag=" + floatingCouponFlag +
+                ", subordinatedFlag=" + subordinatedFlag +
+                ", amortizationFlag=" + amortizationFlag +
+                ", perpetualFlag=" + perpetualFlag +
+                ", issueKind='" + issueKind + '\'' +
+                ", placementDate=" + placementDate +
+                ", stateRegDate=" + stateRegDate +
+                ", issueSizePlan='" + issueSizePlan + '\'' +
+                ", issueSize='" + issueSize + '\'' +
+                ", divYieldFlag=" + divYieldFlag +
+                ", ipoDate=" + ipoDate +
+                ", sector='" + sector + '\'' +
+                ", liquidityFlag=" + liquidityFlag +
+                ", isoCurrencyName='" + isoCurrencyName + '\'' +
+                '}';
+    }
 }

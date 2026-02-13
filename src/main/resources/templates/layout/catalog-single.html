@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:https="http://www.w3.org/1999/xhtml">
 
 <body>
 
@@ -52,7 +52,7 @@
                                          aria-labelledby="home-tab">
                                         <div class="pl_thumb">
                                             <a th:if="${instrument.getBrand() != null}"
-                                               th:href="@{/invest/shop-single(id=${instrument.uid})}">
+                                               th:href="@{/invest/catalog-single/{uid}(uid=${instrument.uid})}">
                                                 <img th:src="@{'//invest-brands.cdn-tinkoff.ru/' +
                                                          ${instrument.getBrand().getLogo()} + 'x640' + ${instrument.getBrand().getLogoExt()}}"
                                                      alt=""
@@ -82,23 +82,45 @@
 
                     <div class="col-md-6 product-details-col">
                         <div class="product-details mb-30">
-                            <h2 th:text="${instrument.getName()}"></h2>
-                            <div class="rating">
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                                                <i class="fas fa-star"></i>
-                                <!--                                <span>(2 Customer review)</span>-->
+                            <h7 th:text="${instrument.getUpdateDateLocalString()}" id="update-date"></h7>
+                            <h2 th:text="${instrument.getUid()}" hidden id="uid"></h2>
+                            <h2 th:text="${instrument.getName()}" id="name" th:style="'color: var(--color-primary);'"></h2>
+                            <h6 th:text="${instrument.getNameLong()}" id="name-long"></h6>
+                            <h4 class="mt-30" >Тикер:</h4>
+                            <h4 th:text="${instrument.getTicker()}" id="ticker"></h4>
+                            <h4 th:if="${instrument.getCurrency() == null}" class="mt-10">Страна эмитента:</h4>
+                            <h4><a th:text="${instrument.getCountryOfRiskName()}" id="country-of-risk-name"></a>
+                            </h4>
+                            <h4><img th:src="@{'//invest-brands.cdn-tinkoff.ru/countries/flags/' +
+                                                         ${instrument.getCountryOfRisk()} + '.png'}"
+                                     alt="" width="25" style="border-radius: 50%"
+                                     onerror="this.onerror=null; this.src='/img/shop/noLogo.jpg';">
+                            </h4>
+
+
+<!--                            <div class="rating">-->
+<!--                                <i class="fas fa-star"></i>-->
+<!--                                <i class="fas fa-star"></i>-->
+<!--                                <i class="fas fa-star"></i>-->
+<!--                                <i class="fas fa-star"></i>-->
+<!--                                <i class="fas fa-star"></i>-->
+<!--                                &lt;!&ndash;                                <span>(2 Customer review)</span>&ndash;&gt;-->
+<!--                            </div>-->
+                            <h5 class="price mt-30 pt-20">
+                                <span class="current" th:text="'Цена: '+${instrument.getPriceString()}"
+                                      id="price"></span>
+                            </h5>
+                            <h5 class="price">
+                                <span class="current" th:text="'Валюта: '+${instrument.getSymbol().getNamePlural()}"></span>
+                            </h5>
+                            <h5 class="price">
+                                <span class="current" th:text="'Лотность: '+${instrument.getLot()}+' шт'"
+                                      id="lot"></span>
+                            </h5>
+                            <div class="mt-20">
+                                <span class="current" th:text="${instrument.getDescription()}"
+                                      id="description"></span>
                             </div>
-                            <div class="price">
-                                <span class="current" th:text="${instrument.getPriceString()}"></span>
-                            </div>
-                            <p>Introducing our stunning collection of device mockups in brutal stylish
-                                environments. Immerse your designs in trend-setting visuals with our 16 high-
-                                resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, andSketch
-                                formats, these mockups will transform your UI/UX projects into works of art.
-                                Elevate your creativity and captivate your audience.</p>
 
                             <div class="product-option">
                                 <form class="form">
@@ -106,10 +128,30 @@
                                         <!--                                        <div>-->
                                         <!--                                            <input class="product-count" type="text" value="1" name="product-count">-->
                                         <!--                                        </div>-->
-                                        <div class="add-to-cart-btn">
-                                            <button class="xb-btn"><i class="far fa-shopping-bag"></i>В избранное
+                                        <!--                                        <div class="add-to-cart-btn">-->
+                                        <div class="add-to-cart-btn d-flex gap-3">
+                                            <button href="javascript:void(0)" class="xb-btn ms-0"
+                                                    style="flex: 1; min-width: 200px; padding: 14px 20px; white-space: nowrap;">
+                                                <i class="far fa-shopping-bag me-2"></i>В избранное
+                                            </button>
+                                            <button onclick="refresh(this); return false;" class="xb-btn"
+                                                    style="flex: 1; min-width: 200px; padding: 14px 20px; white-space: nowrap;">
+                                                <i class="bi bi-arrow-repeat me-2"></i>Обновить
                                             </button>
                                         </div>
+                                        <!--                                            <button class="xb-btn"><i class="far fa-shopping-bag">В избранное</i>-->
+                                        <!--                                            </button>-->
+                                        <!--                                            <button onclick="refresh(this)" class="xb-btn"><i class="bi bi-arrow-repeat">Обновить</i>-->
+                                        <!--                                            </button>-->
+                                        <!--                                        </div>-->
+                                        <!--                                        <div class="add-to-cart-btn d-flex gap-3">-->
+                                        <!--                                            <button class="xb-btn flex-fill py-3 px-4">-->
+                                        <!--                                                <i class="far fa-shopping-bag me-2"></i>В избранное-->
+                                        <!--                                            </button>-->
+                                        <!--                                            <button onclick="refresh(this)" class="xb-btn flex-fill py-3 px-4">-->
+                                        <!--                                                <i class="bi bi-arrow-repeat me-2"></i>Обновить-->
+                                        <!--                                            </button>-->
+                                        <!--                                        </div>-->
                                     </div>
                                 </form>
                             </div>
@@ -141,34 +183,34 @@
                             <!-- Tab panes -->
                             <div class="tab-content" id="pills-tabContent">
                                 <div class="tab-pane fade show active" id="tb-01">
-                                    <p>Introducing our stunning collection of device mockups in brutal stylish
-                                        environments. Immerse your designs in trend-setting visuals with our 16 high-
-                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and
-                                        Sketch formats, these mockups will transform your UI/UX projects into works of
-                                        art.
-                                        Elevate your creativity and captivate your audience with our ultra-realistic
-                                        mockups.</p>
-                                    <p> Immerse your designs in trend-setting visuals with our 16 high-
-                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and
-                                        Sketch formats, these mockups will transform your UI/UX projects into works of
-                                        art.
-                                        Elevate your creativity and captivate your audience with our ultra-realistic
-                                        mockups.</p>
+<!--                                    <p>Introducing our stunning collection of device mockups in brutal stylish-->
+<!--                                        environments. Immerse your designs in trend-setting visuals with our 16 high- -->
+<!--                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and-->
+<!--                                        Sketch formats, these mockups will transform your UI/UX projects into works of-->
+<!--                                        art.-->
+<!--                                        Elevate your creativity and captivate your audience with our ultra-realistic-->
+<!--                                        mockups.</p>-->
+<!--                                    <p> Immerse your designs in trend-setting visuals with our 16 high- -->
+<!--                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and-->
+<!--                                        Sketch formats, these mockups will transform your UI/UX projects into works of-->
+<!--                                        art.-->
+<!--                                        Elevate your creativity and captivate your audience with our ultra-realistic-->
+<!--                                        mockups.</p>-->
                                 </div>
                                 <div class="tab-pane fade" id="tb-02">
-                                    <p>Introducing our stunning collection of device mockups in brutal stylish
-                                        environments. Immerse your designs in trend-setting visuals with our 16 high-
-                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and
-                                        Sketch formats, these mockups will transform your UI/UX projects into works of
-                                        art.
-                                        Elevate your creativity and captivate your audience with our ultra-realistic
-                                        mockups.</p>
-                                    <p> Immerse your designs in trend-setting visuals with our 16 high-
-                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and
-                                        Sketch formats, these mockups will transform your UI/UX projects into works of
-                                        art.
-                                        Elevate your creativity and captivate your audience with our ultra-realistic
-                                        mockups.</p>
+<!--                                    <p>Introducing our stunning collection of device mockups in brutal stylish-->
+<!--                                        environments. Immerse your designs in trend-setting visuals with our 16 high- -->
+<!--                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and-->
+<!--                                        Sketch formats, these mockups will transform your UI/UX projects into works of-->
+<!--                                        art.-->
+<!--                                        Elevate your creativity and captivate your audience with our ultra-realistic-->
+<!--                                        mockups.</p>-->
+<!--                                    <p> Immerse your designs in trend-setting visuals with our 16 high- -->
+<!--                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and-->
+<!--                                        Sketch formats, these mockups will transform your UI/UX projects into works of-->
+<!--                                        art.-->
+<!--                                        Elevate your creativity and captivate your audience with our ultra-realistic-->
+<!--                                        mockups.</p>-->
                                 </div>
                                 <!--                                <div class="tab-pane fade" id="tb-03">-->
                                 <!--                                    <div class="row">-->

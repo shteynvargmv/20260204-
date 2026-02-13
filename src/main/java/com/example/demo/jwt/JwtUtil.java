@@ -84,45 +84,45 @@ public class JwtUtil {
     }
 
     private Boolean isTokenExpired(String token) {
-        System.out.println("isTokenExpired-JwtUtil");
+//        System.out.println("isTokenExpired-JwtUtil");
         try {
             Date expiration = extractExpiration(token);
-            System.out.println("time " + expiration);
+//            System.out.println("time " + expiration);
             boolean expired = expiration.before(new Date());
 
             if (expired) {
-                System.out.println("Expired-true");
+//                System.out.println("Expired-true");
                 final String username = extractUsername(token);
-                System.out.println("Username from expired token: " + username);
+//                System.out.println("Username from expired token: " + username);
 
                 Optional<User> userOpt = userRepository.findByUsername(username);
                 if (userOpt.isPresent()) {
-                    System.out.println("Present-true");
+//                    System.out.println("Present-true");
                     User user = userOpt.get();
                     String refreshToken = user.getRefreshToken();
 
-                    System.out.println("Refresh token exists: " + (refreshToken != null));
+//                    System.out.println("Refresh token exists: " + (refreshToken != null));
                     if (refreshToken != null && !isRefreshTokenExpired(refreshToken)) {
-                        System.out.println("refresh - not expired");
+//                        System.out.println("refresh - not expired");
                         token = generateToken(username);
                         user.setToken(token);
                         userRepository.save(user);
                         System.out.println("new token generated");
                         // Здесь нужно как-то вернуть новый токен клиенту
                     } else {
-                        System.out.println("Refresh token expired or not found");
+//                        System.out.println("Refresh token expired or not found");
                     }
                 } else {
-                    System.out.println("User not found in DB");
+//                    System.out.println("User not found in DB");
                 }
             } else {
-                System.out.println("Token not expired yet");
+//                System.out.println("Token not expired yet");
             }
             expiration = extractExpiration(token);
             return expired = expiration.before(new Date());
 
         } catch (Exception e) {
-            System.out.println("Error checking token expiration: " + e.getMessage());
+//            System.out.println("Error checking token expiration: " + e.getMessage());
             return true;
         }
     }
@@ -133,15 +133,15 @@ public class JwtUtil {
             boolean isBlacklisted = tokenBlackListService.findFirstByToken(token) != null;
             boolean isExpired = isTokenExpired(token);
 
-            System.out.println("Validate token - username: " + username);
-            System.out.println("Validate token - blacklisted: " + isBlacklisted);
-            System.out.println("Validate token - expired: " + isExpired);
+//            System.out.println("Validate token - username: " + username);
+//            System.out.println("Validate token - blacklisted: " + isBlacklisted);
+//            System.out.println("Validate token - expired: " + isExpired);
 
             return (username.equals(userDetails.getUsername())
                     && !isBlacklisted
                     && !isExpired);
         } catch (Exception e) {
-            System.out.println("Token validation error: " + e.getMessage());
+//            System.out.println("Token validation error: " + e.getMessage());
             return false;
         }
     }
@@ -196,7 +196,7 @@ public class JwtUtil {
             }
             return null;
         } catch (Exception e) {
-            System.out.println("Error refreshing token: " + e.getMessage());
+//            System.out.println("Error refreshing token: " + e.getMessage());
             return null;
         }
     }
@@ -213,7 +213,7 @@ public class JwtUtil {
     public void setCookie(HttpServletRequest request,
                           HttpServletResponse response) {
         String token = extractToken(request);
-        System.out.println("token set cookie " + token);
+//        System.out.println("token set cookie " + token);
         if (token != null && !token.trim().isEmpty()) {
             String username = extractUsername(token);
             Optional<User> userOpt = userRepository.findByUsername(username);

@@ -1,14 +1,11 @@
 package com.example.demo.model;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Cache {
     private Map<CacheKey, CacheData> cache = new ConcurrentHashMap<>();
     private long timeToLive = 60 * 1000 * 30;
@@ -64,6 +61,14 @@ public class Cache {
 
     public void del(CacheKey cacheKey){
         cache.remove(cacheKey);
+    }
+
+    @Override
+    public String toString() {
+        return "Cache{" +
+                "cache=" + cache +
+                ", timeToLive=" + timeToLive +
+                '}';
     }
 }
 

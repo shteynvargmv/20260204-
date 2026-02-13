@@ -42,7 +42,14 @@ public class SecurityConfig {
 //                .anyRequest().authenticated()
                             .anyRequest().permitAll() //<--/invest/logout/success
 
-            )
+            ).exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendRedirect("/invest/home");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendRedirect("/invest/home");
+                        })
+                )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);

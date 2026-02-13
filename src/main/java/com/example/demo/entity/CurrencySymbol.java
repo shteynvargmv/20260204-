@@ -1,12 +1,12 @@
-package com.example.demo.model;
+package com.example.demo.entity;
 
-import com.example.demo.entity.Instrument;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "code"))
 public class CurrencySymbol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +17,7 @@ public class CurrencySymbol {
     private String symbolNative;
     private int decimalDigits;
     private int rounding;
+    @Column(unique = true)
     private String code;
     private String namePlural;
 

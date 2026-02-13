@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.model.Register;
+import com.example.demo.dto.response.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -43,9 +43,9 @@ public class UserService implements UserDetailsService {
                 .build();
     }
 
-    public Register register(User user) {
+    public RegisterResponse register(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-           return new Register("Пользователь с таким именем уже зарегистрирован");
+           return new RegisterResponse("Пользователь с таким именем уже существует");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -54,7 +54,7 @@ public class UserService implements UserDetailsService {
             user.setRole(Role.USER);
         }
         User userNew = userRepository.save(user);
-        return new Register(true);
+        return new RegisterResponse(true);
 
     }
 
@@ -64,14 +64,16 @@ public class UserService implements UserDetailsService {
 
     public User findByUsername(String username){
         Optional<User> userOpt = userRepository.findByUsername(username);
-        if (userOpt.isPresent()) {
-            return userOpt.get();
-        }
-        return new User();
+        return userOpt.orElseGet(User::new);
     }
 
     public User save(User user){
         return userRepository.save(user);
     }
 
+    public boolean delRefreshToken(User user) {
+        user.setRefreshToken(null);
+        User userNew = userRepository.save(user);
+        return userNew.getRefreshToken() == null;
+    }
 }

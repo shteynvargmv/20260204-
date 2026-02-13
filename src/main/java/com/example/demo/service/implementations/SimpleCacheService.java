@@ -14,21 +14,15 @@ import java.util.stream.Stream;
 @Service
 public class SimpleCacheService implements CacheService {
     @Autowired
-    private Cache cache;
+    public Cache cache;
 
     @Override
     public Filter getFilter() {
         CacheDataBody[] cacheDataBody = cache.get(CacheUtils.getCacheKey("/catalog", "filter"));
         if (cacheDataBody != null && cacheDataBody.length > 0) {
             Filter filter = (Filter) cacheDataBody[0];
-            System.out.println("get share" + filter.getSelectedShareParameters());
-            System.out.println("get bond" + filter.getSelectedBondParameters());
-            System.out.println("get all" + filter.getSelectedBondParameters());
             return (Filter) cacheDataBody[0];
         }
-        System.out.println("get share new");
-        System.out.println("get bond new");
-        System.out.println("get all new");
         return new Filter();
     }
 
@@ -50,9 +44,6 @@ public class SimpleCacheService implements CacheService {
         } else if (cached != null && filter.getSelectedShareParameters() == null) {
             filter.setSelectedShareParameters(cached.getSelectedShareParameters());
         }
-        System.out.println("set share" + filter.getSelectedShareParameters());
-        System.out.println("set bond" + filter.getSelectedBondParameters());
-        System.out.println("set all" + filter.getSelectedAllParameters());
         cache.put(CacheUtils.getCacheKey("/catalog", "filter"), filter);
     }
 

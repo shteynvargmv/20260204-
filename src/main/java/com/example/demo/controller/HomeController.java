@@ -1,12 +1,15 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.FilterRequest;
-import com.example.demo.dto.InstrumentDto;
-import com.example.demo.dto.LastPriceDto;
+import com.example.demo.dto.*;
+import com.example.demo.dto.request.FilterRequest;
+import com.example.demo.dto.response.RefreshResponse;
 import com.example.demo.entity.Instrument;
 import com.example.demo.jwt.JwtUtil;
-import com.example.demo.model.CurrencySymbol;
+import com.example.demo.model.Currencies;
+import com.example.demo.model.CurrencyData;
+import com.example.demo.entity.CurrencySymbol;
 import com.example.demo.service.CacheService;
+import com.example.demo.service.CurrencyService;
 import com.example.demo.service.DBService;
 import com.example.demo.service.BrokerApiService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,12 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/invest")
@@ -31,76 +34,182 @@ public class HomeController {
     @Autowired
     @Qualifier("instrument")
     DBService instrumentService;
-
     @Autowired
     @Qualifier("tbank")
     BrokerApiService tbankApiService;
-
     @Autowired
     @Qualifier("simple")
     CacheService cacheService;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private CurrencyService currencyService;
+    @Autowired
+    Currencies currencies;
+
+    @PostMapping("/refresh/{uid}")
+    public ResponseEntity<?> refresh(@PathVariable String uid,
+                                     Model model,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response) {
+
+        jwtUtil.setCookie(request, response);
+        try {
+            List<LastPriceDto> prices;
+            AssetDto asset;
+            Instrument instrumentOld = instrumentService.findFirstByUid(uid);
+            Instrument instrumentNew = new Instrument();
+            InstrumentDto dto = new InstrumentDto();
+            if (instrumentOld != null) {
+                if (instrumentOld.getShare() != null) {
+                    dto = tbankApiService.getShareByUid(instrumentOld.getShare().getUid()).getBody().getInstrument();
+                } else if (instrumentOld.getBond() != null) {
+                    dto = tbankApiService.getBondByUid(instrumentOld.getBond().getUid()).getBody().getInstrument();
+                } else if (instrumentOld.getCurrency() != null) {
+                    dto = tbankApiService.getCurrencyByUid(instrumentOld.getCurrency().getUid()).getBody().getInstrument();
+                }
+                prices = tbankApiService.getLastPrices(uid).getBody().getLastPrices();
+                asset = tbankApiService.getAssetById(dto.getAssetUid()).getBody().getAsset();
+                instrumentNew = instrumentService.dtoToEntity(dto, prices, asset);
+            }
+            Instrument instrument = instrumentService.save(instrumentNew);
+            if (instrument != null) {
+                return ResponseEntity.ok().body(new RefreshResponse(
+                        dto,
+                        instrument.getUpdateDateLocalString(),
+                        instrument.getPriceString()
+                ));
+            }
+            return ResponseEntity.badRequest().body(new RefreshResponse("Ошибка обновления"));
+
+        } catch (NullPointerException e) {
+            return ResponseEntity.badRequest().body(new RefreshResponse(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/refresh/all")
+    public ResponseEntity<?> refreshAll(Model model,
+                                        HttpServletRequest request,
+                                        HttpServletResponse response) {
+
+        jwtUtil.setCookie(request, response);
+
+        try {
+            List<Instrument> instruments = new ArrayList<>();
+            List<InstrumentDto> dtos;
+            List<InstrumentDto> dtosAll = new ArrayList<>();
+            List<LastPriceDto> prices;
+            List<LastPriceDto> pricesAll = new ArrayList<>();
+            List<AssetDto> assets = new ArrayList<>();
+
+            List<CurrencyData> currencyDataList = currencies.getCurrencyDataList();
+            List<CurrencySymbol> currencySymbolList = new ArrayList<>();
+            if (currencyDataList != null && !currencyDataList.isEmpty()) {
+                for (CurrencyData currencyData : currencyDataList) {
+                    CurrencySymbol currencySymbol = new CurrencySymbol();
+                    currencySymbol.setName(currencyData.getName());
+                    currencySymbol.setSymbolNative(currencyData.getSymbol_native());
+                    currencySymbol.setDecimalDigits(currencyData.getDecimal_digits());
+                    currencySymbol.setRounding(currencyData.getRounding());
+                    currencySymbol.setCode(currencyData.getCode());
+                    currencySymbol.setNamePlural(currencyData.getName_plural());
+                    currencySymbol.setSymb(currencyData.getSymbol());
+                    currencySymbolList.add(currencySymbol);
+                    currencySymbolList.forEach(x -> {
+                        CurrencySymbol exist = currencyService.findByCode(x.getCode());
+                        if (exist != null) {
+                            x.setId(exist.getId());
+                        }
+                    });
+                }
+                currencyService.saveAll(currencySymbolList);
+            }
+
+//------------------------------------------------------------------------------//
+            dtos = tbankApiService.getAllBonds().getBody().getInstruments();
+            assets.addAll(tbankApiService.getAllAssetsBonds().getBody().getAssets());
+            dtosAll.addAll(dtos);
+            List<String> uids = new ArrayList<>();
+            for (InstrumentDto dto : dtos) {
+                uids.add(dto.getUid());
+                if (uids.size() == 2999) {
+                    prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
+                    uids = new ArrayList<>();
+                    pricesAll.addAll(prices);
+                }
+            }
+            if (!uids.isEmpty()) {
+                prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
+                pricesAll.addAll(prices);
+            }
+
+//-------------------------------------------------------------------------------------//
+            dtos = tbankApiService.getAllShares().getBody().getInstruments();
+            assets.addAll(tbankApiService.getAllAssetsShares().getBody().getAssets());
+            dtosAll.addAll(dtos);
+            uids = new ArrayList<>();
+            for (InstrumentDto dto : dtos) {
+                uids.add(dto.getUid());
+                if (uids.size() == 2999) {
+                    prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
+                    uids = new ArrayList<>();
+                    pricesAll.addAll(prices);
+                }
+            }
+            if (!uids.isEmpty()) {
+                prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
+                pricesAll.addAll(prices);
+            }
+
+//-------------------------------------------------------------------------------------//
+            dtosAll.addAll(tbankApiService.getAllCurrencies().getBody().getInstruments());
+            assets.addAll(tbankApiService.getAllAssetsCurrencies().getBody().getAssets());
+
+            dtos = tbankApiService.getAllCurrencies().getBody().getInstruments();
+            assets.addAll(tbankApiService.getAllAssetsCurrencies().getBody().getAssets());
+            dtosAll.addAll(dtos);
+            uids = dtos.stream()
+                    .map(InstrumentDto::getUid)
+                    .collect(Collectors.toList());
+            prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
+            pricesAll.addAll(prices);
+
+//------------------------------------------------------------------------------------//
+            int i = 1;
+            for (InstrumentDto dto : dtosAll) {
+//                AssetDto asset = tbankApiService.getAssetById(dto.getAssetUid()).getBody().getAsset();
+//                i += 1;
+//                if (i == 50) {
+//                    try {
+//                        Thread.sleep(30_000);
+//                    } catch (InterruptedException e) {
+//                        System.out.println(e.getMessage());
+//                    }
+//                    i = 1;
+//                }
+                Instrument instrument = instrumentService.dtoToEntity(dto, pricesAll, assets);
+                if (instrument != null) {
+                    instruments.add(instrument);
+                }
+            }
+
+            if (!instruments.isEmpty()) {
+                instrumentService.saveAll(instruments);
+            }
+
+            return ResponseEntity.ok().build();
+
+        } catch (NullPointerException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @GetMapping("/home")
     public String home(Model model,
                        HttpServletRequest request,
                        HttpServletResponse response) {
 
-//        List<Instrument> instruments = new ArrayList<>();
-//        List<InstrumentDto> dtos = new ArrayList<>();
-//        List<InstrumentDto> dtosAll = new ArrayList<>();
-//        List<LastPriceDto> pricesAll = new ArrayList<>();
-//        List<LastPriceDto> prices = new ArrayList<>();
-//
-////------------------------------------------------------------------------------//
-//        dtos = tbankApiService.getAllBonds().getBody().getInstruments();
-//        dtosAll.addAll(dtos);
-//        List<String> uids = new ArrayList<>();
-//        for (InstrumentDto dto : dtos) {
-//            uids.add(dto.getUid());
-//            if (uids.size() == 2999){
-//                prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
-//                uids = new ArrayList<>();
-//                pricesAll.addAll(prices);
-//            }
-//        }
-//        if (!uids.isEmpty()){
-//            prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
-//            pricesAll.addAll(prices);
-//        }
-//
-////-------------------------------------------------------------------------------------//
-//        dtos = tbankApiService.getAllShares().getBody().getInstruments();
-//        dtosAll.addAll(dtos);
-//        uids = new ArrayList<>();
-//        for (InstrumentDto dto : dtos) {
-//            uids.add(dto.getUid());
-//            if (uids.size() == 2999){
-//                prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
-//                uids = new ArrayList<>();
-//                pricesAll.addAll(prices);
-//            }
-//        }
-//        if (!uids.isEmpty()){
-//            prices = tbankApiService.getLastPrices(uids).getBody().getLastPrices();
-//            pricesAll.addAll(prices);
-//        }
-//
-////-------------------------------------------------------------------------------------//
-//        dtosAll.addAll(tbankApiService.getAllCurrencies().getBody().getInstruments());
-//
-////------------------------------------------------------------------------------------//
-//        for (InstrumentDto dto : dtosAll) {
-//            Instrument instrument = instrumentService.dtoToEntity(dto, pricesAll);
-//            instruments.add(instrument);
-//        }
-//
-//        if (!instruments.isEmpty()) {
-//            instrumentService.saveAll(instruments);
-//        }
-
-        jwtUtil.setCookie(request,response);
+        jwtUtil.setCookie(request, response);
 
         model.addAttribute("showHeader", true);
         model.addAttribute("showFooter", true);
@@ -114,7 +223,7 @@ public class HomeController {
     public String signIn(Model model,
                          HttpServletRequest request,
                          HttpServletResponse response) {
-        jwtUtil.setCookie(request,response);
+        jwtUtil.setCookie(request, response);
         return "sign-in";
     }
 
@@ -122,7 +231,7 @@ public class HomeController {
     public String signUp(Model model,
                          HttpServletRequest request,
                          HttpServletResponse response) {
-        jwtUtil.setCookie(request,response);
+        jwtUtil.setCookie(request, response);
         return "sign-up";
     }
 
@@ -130,7 +239,7 @@ public class HomeController {
     public String logOut(Model model,
                          HttpServletRequest request,
                          HttpServletResponse response) {
-        jwtUtil.setCookie(request,response);
+        jwtUtil.setCookie(request, response);
         return "log-out";
     }
 
@@ -138,17 +247,10 @@ public class HomeController {
     public ResponseEntity<?> filter(@RequestBody FilterRequest body,
                                     HttpServletRequest request,
                                     HttpServletResponse response) {
-        jwtUtil.setCookie(request,response);
+        jwtUtil.setCookie(request, response);
         cacheService.setFilter(body.getFilter());
         return ResponseEntity.ok().build();
     }
-
-//    @GetMapping("/catalog")
-//    public String emptyCatalog(HttpServletRequest request,
-//                               HttpServletResponse response) {
-//        jwtUtil.setCookie(request,response);
-//        return "redirect:/invest/catalog/" + cacheService.getType();
-//    }
 
     @GetMapping("/catalog/{type}")
     public String catalog(HttpServletRequest request,
@@ -158,7 +260,7 @@ public class HomeController {
                           @RequestParam(name = "sort", defaultValue = "") String sort,
                           Model model) {
 
-        jwtUtil.setCookie(request,response);
+        jwtUtil.setCookie(request, response);
         cacheService.setType(type);
         cacheService.setSortBy(sort);
 
@@ -209,13 +311,14 @@ public class HomeController {
             return "main";
         }
     }
+
     @GetMapping("/catalog-single/{uid}")
     public String catalogSingle(HttpServletRequest request,
-                          HttpServletResponse response,
-                          @PathVariable String uid,
-                          Model model) {
+                                HttpServletResponse response,
+                                @PathVariable String uid,
+                                Model model) {
 
-        jwtUtil.setCookie(request,response);
+        jwtUtil.setCookie(request, response);
 
         Instrument instrument = instrumentService.findFirstByUid(uid);
 
@@ -226,10 +329,20 @@ public class HomeController {
             return "main";
 
         } else {
+            if (instrument.getDescription() == null) {
+                AssetDto asset = tbankApiService.getAssetById(instrument.getAssetUid()).getBody().getAsset();
+                if (asset != null) {
+                    instrument.setDescription(asset.getDescription());
+                    instrument.setBrCodeName(asset.getBrCodeName());
+                    Instrument instrumentNew = instrumentService.save(instrument);
+                    instrumentNew = instrument;
+                }
+            }
+            model.addAttribute("instrument", instrument);
             model.addAttribute("showHeader", true);
             model.addAttribute("showFooter", true);
             model.addAttribute("showCatalogSingle", true);
-            model.addAttribute("instrument", instrument);
+
             return "main";
         }
     }
@@ -238,7 +351,7 @@ public class HomeController {
     public String contact(HttpServletRequest request,
                           HttpServletResponse response,
                           Model model) {
-        jwtUtil.setCookie(request,response);
+        jwtUtil.setCookie(request, response);
         model.addAttribute("showHeader", true);
         model.addAttribute("showFooter", true);
         model.addAttribute("showContact", true);
@@ -248,7 +361,7 @@ public class HomeController {
     @GetMapping("/logout/success")
     public String logout(HttpServletRequest request,
                          HttpServletResponse response) {
-        jwtUtil.setCookie(request,response);
+        jwtUtil.setCookie(request, response);
         return "log-out";
     }
 }

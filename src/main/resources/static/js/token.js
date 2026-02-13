@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Функция для установки видимости кнопок
     function updateButtonsVisibility() {
 
         const tokenEl = document.getElementById('token');
@@ -13,8 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let role = localStorage.getItem('role');
         const hasAccess = role === 'ADMIN' || role === 'USER';
+        const hasFullAccess = role === 'ADMIN';
 
-        // Обновляем видимость для всех элементов (включая клонированные)
+
         document.querySelectorAll('#favorite').forEach(el => {
             el.hidden = !hasAccess;
         });
@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
             el.hidden = !hasAccess;
         });
 
-        // Обновляем видимость для всех элементов (включая клонированные)
         document.querySelectorAll('#favorite-over').forEach(el => {
             el.hidden = !hasAccess;
         });
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
             el.hidden = !hasAccess;
         });
 
-        // Обновляем видимость для всех элементов (включая клонированные)
         document.querySelectorAll('#favorite-left').forEach(el => {
             el.hidden = !hasAccess;
         });
@@ -48,14 +46,56 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('#logout').forEach(el => {
             el.hidden = !hasAccess;
         });
+
+        document.querySelectorAll('#refresh').forEach(el => {
+            el.hidden = !hasFullAccess;
+        })
+
+        document.querySelectorAll('#refresh-over').forEach(el => {
+            el.hidden = !hasFullAccess;
+        })
+
+        document.querySelectorAll('#refresh-left').forEach(el => {
+            el.hidden = !hasFullAccess;
+        })
+
+        document.querySelectorAll('#add-new-admin').forEach(el => {
+            el.hidden = !hasFullAccess;
+        })
+
+        document.querySelectorAll('#add-new-admin-over').forEach(el => {
+            el.hidden = !hasFullAccess;
+        })
+
+        document.querySelectorAll('#add-new-admin-left').forEach(el => {
+            el.hidden = !hasFullAccess;
+        })
+
+        document.querySelectorAll('#added-functions').forEach(el => {
+            el.hidden = !hasFullAccess;
+        })
+
+        let username = localStorage.getItem('username');
+        document.querySelectorAll('#usernameString').forEach(el => {
+            if (username && el.textContent !== username) {
+                el.textContent = username;
+            } else if (!username && el.textContent !== 'InvestMate') {
+                el.textContent = 'InvestMate';
+            }
+        })
+
+        const loginLink = document.getElementById('loginLink');
+        const question = document.getElementById('question');
+        if (role && loginLink.style.display !== 'none') {
+            loginLink.style.display = 'none';
+            question.style.display = 'none';
+        }
     }
 
-    // Первоначальная установка видимости
     updateButtonsVisibility();
 
-    // Отслеживаем появление sticky-меню
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
+    const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
             if (mutation.type === 'childList') {
                 // Проверяем, не появились ли новые элементы меню (клоны)
                 updateButtonsVisibility();
@@ -70,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Также отслеживаем прокрутку (на случай sticky header)
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function () {
         const header = document.getElementById('xb-header-area');
         if (header && header.classList.contains('is-sticky')) {
             // При sticky состоянии обновляем видимость
@@ -79,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Отслеживаем изменения localStorage
-    window.addEventListener('storage', function(e) {
+    window.addEventListener('storage', function (e) {
         if (e.key === 'role') {
             updateButtonsVisibility();
         }

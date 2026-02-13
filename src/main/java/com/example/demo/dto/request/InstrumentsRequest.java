@@ -1,5 +1,7 @@
-package com.example.demo.dto;
+package com.example.demo.dto.request;
 
+import com.example.demo.dto.InstrumentExchange;
+import com.example.demo.dto.InstrumentStatus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,7 +22,7 @@ public class InstrumentsRequest {
     }
 
     public InstrumentsRequest() {
-        this.instrumentStatus = InstrumentStatus.INSTRUMENT_STATUS_BASE;
+        this.instrumentStatus = InstrumentStatus.INSTRUMENT_STATUS_ALL;
         this.instrumentExchange = InstrumentExchange.INSTRUMENT_EXCHANGE_UNSPECIFIED;
     }
 

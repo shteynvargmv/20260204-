@@ -1,8 +1,7 @@
 package com.example.demo.service.implementations;
 
 
-import com.example.demo.dto.InstrumentsResponse;
-import com.example.demo.dto.LastPricesResponse;
+import com.example.demo.dto.response.*;
 import com.example.demo.model.Cache;
 import com.example.demo.model.CacheStat;
 import com.example.demo.service.BrokerApiService;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -26,26 +26,55 @@ public class TBankApiService implements BrokerApiService {
 
     @Override
     public ResponseEntity<InstrumentsResponse> getAllBonds() {
-        ResponseEntity<InstrumentsResponse> response = restUtils.getAllBonds();
-        return response;
+        return restUtils.getAllBonds();
     }
-
     @Override
     public ResponseEntity<InstrumentsResponse> getAllShares() {
-        ResponseEntity<InstrumentsResponse> response = restUtils.getAllShares();
-        return response;
+        return restUtils.getAllShares();
     }
-
     @Override
     public ResponseEntity<InstrumentsResponse> getAllCurrencies() {
-        ResponseEntity<InstrumentsResponse> response = restUtils.getAllCurrencies();
-        return response;
+        return restUtils.getAllCurrencies();
+    }
+    @Override
+    public ResponseEntity<LastPricesResponse> getLastPrices(List<String> uids) {
+        return restUtils.getLastPrices(uids);
+    }
+    @Override
+    public ResponseEntity<LastPricesResponse> getLastPrices(String uid) {
+        return this.getLastPrices(Arrays.asList(uid));
+    }
+    @Override
+    public ResponseEntity<InstrumentResponse> getShareByUid(String uid) {
+        return restUtils.getShareByUid(uid);
+    }
+    @Override
+    public ResponseEntity<InstrumentResponse> getBondByUid(String uid) {
+        return restUtils.getBondByUid(uid);
+    }
+    @Override
+    public ResponseEntity<InstrumentResponse> getCurrencyByUid(String uid) {
+        return restUtils.getCurrencyByUid(uid);
     }
 
     @Override
-    public ResponseEntity<LastPricesResponse> getLastPrices(List<String> uids) {
-        ResponseEntity<LastPricesResponse> response = restUtils.getLastPrices(uids);
-        return response;
+    public ResponseEntity<AssetResponse> getAssetById(String id) {
+        return restUtils.getAssetByUid(id);
+    }
+
+    @Override
+    public ResponseEntity<AssetsResponse> getAllAssetsBonds() {
+        return restUtils.getAllAssetsBonds();
+    }
+
+    @Override
+    public ResponseEntity<AssetsResponse> getAllAssetsShares() {
+        return restUtils.getAllAssetsShares();
+    }
+
+    @Override
+    public ResponseEntity<AssetsResponse> getAllAssetsCurrencies() {
+        return restUtils.getAllAssetsCurrencies();
     }
 //    public ResponseEntity<?> price(String ids) {
 //        List<String> idsList = this.getIdsExist(ids);
