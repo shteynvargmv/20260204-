@@ -2,16 +2,16 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.*;
 import com.example.demo.dto.request.FilterRequest;
+import com.example.demo.dto.response.FavoriteResponse;
 import com.example.demo.dto.response.RefreshResponse;
+import com.example.demo.entity.Favorite;
 import com.example.demo.entity.Instrument;
+import com.example.demo.entity.User;
 import com.example.demo.jwt.JwtUtil;
 import com.example.demo.model.Currencies;
 import com.example.demo.model.CurrencyData;
 import com.example.demo.entity.CurrencySymbol;
-import com.example.demo.service.CacheService;
-import com.example.demo.service.CurrencyService;
-import com.example.demo.service.DBService;
-import com.example.demo.service.BrokerApiService;
+import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +46,18 @@ public class HomeController {
     private CurrencyService currencyService;
     @Autowired
     Currencies currencies;
+    @Autowired
+    UserService userService;
+    @Autowired
+    FavoriteService favoriteService;
 
     @PostMapping("/refresh/{uid}")
     public ResponseEntity<?> refresh(@PathVariable String uid,
                                      Model model,
                                      HttpServletRequest request,
                                      HttpServletResponse response) {
+
+        User user = userService.findByUsername(jwtUtil.getUsername(request));
 
         jwtUtil.setCookie(request, response);
         try {
@@ -78,13 +84,82 @@ public class HomeController {
                         dto,
                         instrument.getUpdateDateLocalString(),
                         instrument.getPriceString()
-                ));
+                        ));
             }
             return ResponseEntity.badRequest().body(new RefreshResponse("Ошибка обновления"));
 
         } catch (NullPointerException e) {
             return ResponseEntity.badRequest().body(new RefreshResponse(e.getMessage()));
         }
+    }
+
+    @PostMapping("/favorite-add/{uid}")
+    public ResponseEntity<FavoriteResponse> favoriteAdd(@PathVariable String uid,
+                                     Model model,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response) {
+
+        User user = userService.findByUsername(jwtUtil.getUsername(request));
+        jwtUtil.setCookie(request, response);
+
+        List<String> uids = favoriteService.findInstrumentsByUserId(user.getId())
+                .stream()
+                .map(Instrument::getUid)
+                .collect(Collectors.toList());
+
+        if (uids.contains(uid)){
+            FavoriteResponse favoriteResponse = new FavoriteResponse(uids);
+            jwtUtil.setFavorites(uid, response);
+            return ResponseEntity.ok().body(favoriteResponse);
+        }
+
+        Favorite favorite = new Favorite(user, instrumentService.findFirstByUid(uid));
+        favorite = favoriteService.save(favorite);
+        if (favorite != null){
+            uids.add(uid);
+            FavoriteResponse favoriteResponse = new FavoriteResponse(uids);
+            jwtUtil.setFavorites(uid, response);
+            return ResponseEntity.ok().body(favoriteResponse);
+        }
+
+        return ResponseEntity.badRequest().body(new FavoriteResponse(
+                uids,
+                "При добавлениие в Избранное возникла ошибка"
+        ));
+
+    }
+
+    @PostMapping("/favorite-del/{uid}")
+    public ResponseEntity<FavoriteResponse> favoriteDel(@PathVariable String uid,
+                                                        Model model,
+                                                        HttpServletRequest request,
+                                                        HttpServletResponse response) {
+
+        User user = userService.findByUsername(jwtUtil.getUsername(request));
+        jwtUtil.setCookie(request, response);
+
+        List<String> uids = favoriteService.findInstrumentsByUserId(user.getId())
+                .stream()
+                .map(Instrument::getUid)
+                .collect(Collectors.toList());
+
+        if (!uids.contains(uid)){
+            FavoriteResponse favoriteResponse = new FavoriteResponse(uids);
+            jwtUtil.delFavorites(uid, response);
+            return ResponseEntity.ok().body(favoriteResponse);
+        }
+
+        if (favoriteService.deleteByUserAndInstrument(user, instrumentService.findFirstByUid(uid))){
+            uids.remove(uid);
+            FavoriteResponse favoriteResponse = new FavoriteResponse(uids);
+            jwtUtil.delFavorites(uid, response);
+            return ResponseEntity.ok().body(favoriteResponse);
+        }
+
+        return ResponseEntity.badRequest().body(new FavoriteResponse(
+                uids,
+                "При удалении из Избранного возникла ошибка"
+        ));
     }
 
     @PostMapping("/refresh/all")
@@ -218,6 +293,23 @@ public class HomeController {
         return "main";
     }
 
+    @GetMapping("/favorite")
+    public String favorite(Model model,
+                       HttpServletRequest request,
+                       HttpServletResponse response) {
+
+        User user = userService.findByUsername(jwtUtil.getUsername(request));
+        jwtUtil.setCookie(request, response);
+        List<Instrument> instruments = favoriteService.findInstrumentsByUserId(user.getId());
+        jwtUtil.setFavorites(instruments,response);
+        model.addAttribute("instruments", instruments);
+        model.addAttribute("showHeader", true);
+        model.addAttribute("showFooter", true);
+        model.addAttribute("showFavorite", true);
+
+        return "main";
+    }
+
 
     @GetMapping("/sign-in")
     public String signIn(Model model,
@@ -290,10 +382,12 @@ public class HomeController {
             return "main";
 
         } else {
+            List<Instrument> instruments = page.getContent();
+            jwtUtil.setFavorites(instruments, response);
             model.addAttribute("showHeader", true);
             model.addAttribute("showFooter", true);
             model.addAttribute("showCatalog", true);
-            model.addAttribute("instruments", page.getContent());
+            model.addAttribute("instruments", instruments);
             model.addAttribute("pagesCount", page.getTotalPages());
             model.addAttribute("pageNum", Integer.parseInt(pageNum));
             model.addAttribute("onPage", ON_PAGE);
@@ -318,6 +412,7 @@ public class HomeController {
                                 @PathVariable String uid,
                                 Model model) {
 
+        User user = userService.findByUsername(jwtUtil.getUsername(request));
         jwtUtil.setCookie(request, response);
 
         Instrument instrument = instrumentService.findFirstByUid(uid);
@@ -334,10 +429,14 @@ public class HomeController {
                 if (asset != null) {
                     instrument.setDescription(asset.getDescription());
                     instrument.setBrCodeName(asset.getBrCodeName());
-                    Instrument instrumentNew = instrumentService.save(instrument);
-                    instrumentNew = instrument;
+                    instrument = instrumentService.save(instrument);
                 }
+                instrument.setFavorites(
+                        favoriteService.findByUserIdAndInstrumentUid(
+                                user.getId(),
+                                instrument.getUid()));
             }
+            jwtUtil.setFavorites(instrument, response);
             model.addAttribute("instrument", instrument);
             model.addAttribute("showHeader", true);
             model.addAttribute("showFooter", true);

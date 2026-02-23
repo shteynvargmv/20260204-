@@ -39,8 +39,8 @@
 <!-- preloader start -->
 <div id="xb-loadding" class="xb-loader"><div class="loading-spin"></div></div>
 <div id="global-loader" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 99999; justify-content: center; align-items: center; flex-direction: column;">
-    <div style="width: 80px; height: 80px; border: 3px solid black; border-top: 3px solid #ccff00; border-right: 3px solid #ccff00; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-    <div style="color: #ccff00; margin-top: 20px; font-family: 'Roboto', sans-serif;">ОБНОВЛЕНИЕ ВЫПОЛНЯЕТСЯ</div>
+    <div style="width: 70px; height: 70px; border: 3px solid black; border-top: 3px solid #ccff00; border-right: 3px solid #ccff00; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+<!--    <div style="color: #ccff00; margin-top: 20px; font-family: 'Roboto', sans-serif;">ОБНОВЛЕНИЕ ВЫПОЛНЯЕТСЯ</div>-->
 </div>
 
 <style>
@@ -77,6 +77,9 @@
     <div th:if="${showCatalogSingle == true}">
         <main th:replace="~{layout/catalog-single :: main}"></main>
     </div>
+    <div th:if="${showFavorite == true}">
+        <main th:replace="~{layout/favorite :: main}"></main>
+    </div>
     <!-- main area end  -->
     
    <!-- footer strt -->
@@ -86,8 +89,8 @@
     <!-- footer end -->
 </div>
 
-<span id="token" th:value="${token}" hidden></span>
-<span id="role" th:value="${role}" hidden></span>
+<!--<span id="token" th:value="${token}" hidden></span>-->
+<!--<span id="role" th:value="${role}" hidden></span>-->
 
 <!-- jquery include -->
 <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
@@ -120,6 +123,7 @@
 <script th:src="@{/js/sign.js}"></script>
 <script th:src="@{/js/refresh.js}"></script>
 <script th:src="@{/js/scroll.js}"></script>
+<script th:src="@{/js/favorite.js}"></script>
 
 </body>
 

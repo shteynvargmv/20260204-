@@ -14,6 +14,12 @@
                     <a th:if="${type != null && type == 'bond'}">Облигации</a>
                     <a th:if="${type != null && type == 'currency'}">Валюта</a>
                 </h2>
+                <ul class="breadcrumb__list">
+                    <ul class="breadcrumb__list">
+                        <li class="breadcrumb-item"><a th:href="@{/invest/home}">Главная</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/invest/favorite}">Избранное</a></li>
+                    </ul>
+                </ul>
             </div>
         </div>
     </section>
@@ -69,13 +75,14 @@
                                             <a class="justify-content-end">Тикер: по убыванию</a>
                                         </option>
 
-                                        <option value="nominalCurrency_lastPriceUnits_lastPriceNano_asc"
-                                                th:selected="${sort == 'nominalCurrency_lastPriceUnits_lastPriceNano_asc' ||
-                                                (param.sort != null && param.sort[0] == 'nominalCurrency_lastPriceUnits_lastPriceNano_asc')}">
+                                        <option value="nominalCurrency_price_asc"
+                                                th:selected="${sort == 'nominalCurrency_price_asc' ||
+                                                (param.sort != null && param.sort[0] == 'nominalCurrency_price_asc')}">
                                             Цена: по возрастанию
                                         </option>
-                                        <option value="nominalCurrency_lastPriceUnits_lastPriceNano_desc"
-                                                th:selected="${sort == 'nominalCurrency_lastPriceUnits_lastPriceNano_desc' || (param.sort != null && param.sort[0] == 'nominalCurrency_lastPriceUnits_lastPriceNano_desc')}">
+                                        <option value="nominalCurrency_price_desc"
+                                                th:selected="${sort == 'nominalCurrency_price_desc' ||
+                                                (param.sort != null && param.sort[0] == 'nominalCurrency_price_desc')}">
                                             Цена: по убыванию
                                         </option>
                                     </select>
@@ -120,11 +127,18 @@
                                                     <img th:src="@{/img/shop/noLogo.jpg}"
                                                          alt="">
                                                 </a>
-                                                <div class="product--btn">
-                                                    <a class="xb-btn" href="shop-single.html"><i
-                                                            class="far fa-shopping-bag"></i>В избранное</a>
+                                                <div class="product--btn" th:id="'favorite-uid'+${instrument.uid}"
+                                                     onclick="favorite(this); return false;">
+                                                    <a class="xb-btn">
+                                                        <i class="far fa-shopping-bag"></i>В избранное</a>
                                                 </div>
-
+<!--                                                <div class="product&#45;&#45;btn">-->
+<!--                                                    <button onclick="favorite(this); return false;" class="xb-btn ms-0"-->
+<!--                                                          th:id="'favorite-uid'+${instrument.uid}">-->
+<!--                                                        <i class="far fa-shopping-bag me-2"></i>-->
+<!--                                                        <a></a>-->
+<!--                                                    </button>-->
+<!--                                                </div>-->
                                                 <!--                                                    <div class="product-details text-end me-0 p-2" th:style="'transform: scale(0.7);'"-->
 
                                                 <div class="product--holder mt-1 pe-0 pt-0">
@@ -309,42 +323,6 @@
 
 </main>
 <!-- main area end  -->
-
-<!--    &lt;!&ndash; footer start &ndash;&gt;-->
-<!--    <div th:if="${showFooter == true}">-->
-<!--        <footer th:replace="~{layout/footer :: footer}"></footer>-->
-<!--    </div>-->
-<!--    &lt;!&ndash; footer start &ndash;&gt;-->
-
-<!--</div>-->
-
-<!--&lt;!&ndash; jquery include &ndash;&gt;-->
-<!--<script th:src="@{/js/jquery-3.7.1.min.js}"></script>-->
-<!--<script th:src="@{/js/bootstrap.bundle.min.js}"></script>-->
-<!--<script th:src="@{/js/swiper.min.js}"></script>-->
-<!--<script th:src="@{/js/wow.min.js}"></script>-->
-<!--<script th:src="@{/js/gsap.min.js}"></script>-->
-<!--<script th:src="@{/js/ScrollSmoother.min.js}"></script>-->
-<!--<script th:src="@{/js/ScrollTrigger.min.js}"></script>-->
-<!--<script th:src="@{/js/SplitText.min.js}"></script>-->
-<!--<script th:src="@{/js/appear.js}"></script>-->
-<!--<script th:src="@{/js/odometer.min.js}"></script>-->
-<!--<script th:src="@{/js/imagesloaded.pkgd.min.js}"></script>-->
-<!--<script th:src="@{/js/jquery.marquee.min.js}"></script>-->
-<!--<script th:src="@{/js/isotope.pkgd.min.js}"></script>-->
-<!--<script th:src="@{/js/jquery.magnific-popup.min.js}"></script>-->
-<!--<script th:src="@{/js/touchspin.js}"></script>-->
-<!--<script th:src="@{/js/jquery-ui.min.js}"></script>-->
-<!--<script th:src="@{/js/imageRevealHover.js}"></script>-->
-<!--<script th:src="@{/js/TweenMax.min.js}"></script>-->
-<!--<script th:src="@{/js/easing.min.js}"></script>-->
-<!--<script th:src="@{/js/scrollspy.js}"></script>-->
-<!--<script th:src="@{/js/ukiyo.min.js}"></script>-->
-<!--<script th:src="@{/js/lenis.js}"></script>-->
-<!--<script th:src="@{/js/matter.js}"></script>-->
-<!--<script th:src="@{/js/throwable.js}"></script>-->
-<!--<script th:src="@{/js/main.js}"></script>-->
-
 
 </body>
 

@@ -48,6 +48,10 @@ public class UserService implements UserDetailsService {
            return new RegisterResponse("Пользователь с таким именем уже существует");
         }
 
+        if (userRepository.existsByEmail(user.getEmail())) {
+            return new RegisterResponse("Пользователь с таким email уже существует");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (user.getRole() == null) {

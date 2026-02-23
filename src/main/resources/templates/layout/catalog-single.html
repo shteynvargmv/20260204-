@@ -130,12 +130,15 @@
                                         <!--                                        </div>-->
                                         <!--                                        <div class="add-to-cart-btn">-->
                                         <div class="add-to-cart-btn d-flex gap-3">
-                                            <button href="javascript:void(0)" class="xb-btn ms-0"
-                                                    style="flex: 1; min-width: 200px; padding: 14px 20px; white-space: nowrap;">
-                                                <i class="far fa-shopping-bag me-2"></i>В избранное
+                                            <button onclick="favorite(this); return false;" class="xb-btn ms-0"
+                                                    style="flex: 1; min-width: 300px; padding: 14px 20px; white-space: nowrap;"
+                                                    th:id="'favorite-uid'+${instrument.uid}">
+                                                <i class="far fa-shopping-bag me-2"></i>
+                                                <a id="favorite-text"
+                                                   th:text="${instrument.favorites} == null ? 'В избранное' : 'Убрать из избранного' "></a>
                                             </button>
                                             <button onclick="refresh(this); return false;" class="xb-btn"
-                                                    style="flex: 1; min-width: 200px; padding: 14px 20px; white-space: nowrap;">
+                                                    style="flex: 1; min-width: 300px; padding: 14px 20px; white-space: nowrap;">
                                                 <i class="bi bi-arrow-repeat me-2"></i>Обновить
                                             </button>
                                         </div>

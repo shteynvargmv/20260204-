@@ -1,12 +1,15 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 @Entity
@@ -39,6 +42,8 @@ public class Instrument {
 
     private int lastPriceUnits; // целая часть
     private int lastPriceNano; //представления дробной части (копеек * 1_000_000_000)
+
+    private BigDecimal price;
 
     private String brCodeName;
     @Column(length = 1000) // Или
@@ -78,14 +83,17 @@ public class Instrument {
                 referencedColumnName = "id")
     private CurrencySymbol symbol;
 
-    @Transient
-    private String priceString;
+    @OneToMany(mappedBy = "instrument", cascade = CascadeType.ALL)
+    private List<Favorite> favorites = new ArrayList<>();
 
     @Transient
     private String updateDateString;
 
     @Transient
     private String typeString;
+
+    @Transient
+    private String priceString;
 
     public CurrencySymbol getSymbol() {
         return symbol;
@@ -343,34 +351,41 @@ public class Instrument {
         this.nameLong = nameLong;
     }
 
-    public String getPriceString() {
-        int units = lastPriceUnits;
-        int nano = lastPriceNano;
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
 
-        String curr;
-        int decimalDigits;
-        CurrencySymbol symbol = getSymbol();
-        if (symbol != null){
-            decimalDigits = symbol.getDecimalDigits();
-            curr = getSymbol().getSymb();
-        } else {
-            decimalDigits = 3;
-            curr = nominalCurrency.toUpperCase();
-        }
-        BigDecimal total = new BigDecimal(units).add(
-                        new BigDecimal(nano).divide(new BigDecimal("1000000000")))
-                .setScale(decimalDigits, RoundingMode.HALF_UP);
+    public void setFavorites(List<Favorite> favorites) {
+        this.favorites = favorites;
+    }
 
-        if ( this.bond != null ) {
-            total = total.multiply(BigDecimal.TEN);
-        }
+    public void setFavorites(Favorite favorite) {
+        this.favorites = favorites != null
+                ? List.copyOf(favorites)
+                : List.of();
+    }
 
-        priceString = total + " " + curr;
-        return priceString;
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public void setPriceString(String priceString) {
         this.priceString = priceString;
+    }
+
+    public String getPriceString() {
+        String curr;
+        CurrencySymbol symbol = this.getSymbol();
+        if (symbol != null){
+            curr = this.getSymbol().getSymb();
+        } else {
+            curr = this.getNominalCurrency().toUpperCase();
+        }
+        return this.price + " " + curr;
     }
 
     @PostLoad

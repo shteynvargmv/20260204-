@@ -86,10 +86,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const loginLink = document.getElementById('loginLink');
         const question = document.getElementById('question');
-        if (role && loginLink.style.display !== 'none') {
+        if (role && loginLink && question && loginLink.style.display !== 'none') {
             loginLink.style.display = 'none';
             question.style.display = 'none';
         }
+
+        const registerButton = document.getElementById('registerButton');
+        if (role && registerButton && registerButton.textContent !== 'ЗАРЕГИСТРИРОВАТЬ') {
+            registerButton.textContent = 'ЗАРЕГИСТРИРОВАТЬ';
+        }
+
+        document.querySelectorAll('[id^="favorite-uid"]').forEach(el=> {
+                let favorite = getCookie(el.id);
+                const favoriteText = el.querySelector('a');
+                if (favorite && favoriteText && favorite === el.id.slice(12) &&
+                    favoriteText.textContent !== "Убрать из избранного") {
+                    favoriteText.textContent = "Убрать из избранного";
+                } else if (favoriteText && favorite !== el.id.slice(12) &&
+                    favoriteText.textContent !== "В избранное") {
+                    favoriteText.textContent = "В избранное";
+                }
+            }
+        )
+    }
+
+    function getCookie(name) {
+        const cookies = document.cookie.split('; ');
+
+        for (let cookie of cookies) {
+            const [cookieName, cookieValue] = cookie.split('=');
+
+            if (cookieName === name) {
+                return decodeURIComponent(cookieValue);
+            }
+        }
+
+        return null;
     }
 
     updateButtonsVisibility();
@@ -113,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', function () {
         const header = document.getElementById('xb-header-area');
         if (header && header.classList.contains('is-sticky')) {
-            // При sticky состоянии обновляем видимость
             updateButtonsVisibility();
         }
     });
@@ -124,6 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
             updateButtonsVisibility();
         }
     });
+
+
 
 });
 // document.onclick = function(event) {

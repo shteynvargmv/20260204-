@@ -5,13 +5,13 @@
 <!-- main area start  -->
 <main th:fragment="main">
     <!-- breadcrumb start  -->
-    <section class="breadcrumb pt-90 pb-120">
+    <section class="breadcrumb pt-10 pb-40">
         <div class="container">
             <div class="breadcrumb__content text-center">
                 <h2 class="breadcrumb__title">КОНТАКТЫ</h2>
                 <ul class="breadcrumb__list">
                     <li class="breadcrumb-item"><a th:href="@{/invest/home}">Главная</a></li>
-                    <li class="breadcrumb-item">Контакты</li>
+                    <li class="breadcrumb-item"><a th:href="@{/invest/catalog/all}">Каталог</a></li>
                 </ul>
             </div>
         </div>
@@ -19,11 +19,11 @@
     <!-- breadcrumb end  -->
 
     <!-- contact start -->
-    <section class="contact pt-110 pb-180">
+    <section class="contact pt-10 pb-130">
         <div class="container">
             <div class="row pb-125">
-                <div class="section-title pb-60">
-                    <h3 class="title wow skewIn">АКАДЕМИЯ <br> <span>"ТОП"</span></h3>
+                <div class="section-title pb-20">
+                    <h3 class="title wow skewIn" style="color:var(--color-primary)">АКАДЕМИЯ <br> <span>"ТОП"</span></h3>
                 </div>
                 <ul class="contact-location">
                     <li><h3>Адрес</h3><span>Россия, г. Пермь, ул. Швецова, 39, офис 321</span></li>

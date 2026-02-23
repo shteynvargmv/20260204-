@@ -1,5 +1,6 @@
 package com.example.demo.jwt;
 
+import com.example.demo.entity.Instrument;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.TokenBlackListService;
@@ -225,10 +226,66 @@ public class JwtUtil {
                           HttpServletResponse response) {
         Cookie authCookie = new Cookie("token", user.getToken());
         authCookie.setHttpOnly(true);
-        authCookie.setSecure(false); // true для HTTPS
+        authCookie.setSecure(false);
         authCookie.setPath("/");
         authCookie.setMaxAge(24 * 60 * 60); // 24 часа
         response.addCookie(authCookie);
+    }
+
+    public void setFavorites(Instrument instrument,
+                             HttpServletResponse response) {
+        instrument.getFavorites().forEach(favorite -> {
+            String uid = favorite.getInstrument().getUid();
+            Cookie favCookie = new Cookie("favorite-uid" + uid, uid);
+            favCookie.setHttpOnly(false);
+            favCookie.setSecure(false);
+            favCookie.setPath("/");
+            favCookie.setMaxAge(24 * 60 * 60); // 24 часа
+            response.addCookie(favCookie);
+        });
+    }
+
+    public void setFavorites(List<Instrument> instruments,
+                             HttpServletResponse response) {
+        instruments.forEach(instrument -> {
+            instrument.getFavorites().forEach(favorite -> {
+                String uid = favorite.getInstrument().getUid();
+                Cookie favCookie = new Cookie("favorite-uid" + uid, uid);
+                favCookie.setHttpOnly(false);
+                favCookie.setSecure(false);
+                favCookie.setPath("/");
+                favCookie.setMaxAge(24 * 60 * 60); // 24 часа
+                response.addCookie(favCookie);
+            });
+        });
+    }
+
+    public void setFavorites(String uid,
+                             HttpServletResponse response) {
+        Cookie favCookie = new Cookie("favorite-uid" + uid, uid);
+        favCookie.setHttpOnly(false);
+        favCookie.setSecure(false);
+        favCookie.setPath("/");
+        favCookie.setMaxAge(24 * 60 * 60); // 24 часа
+        response.addCookie(favCookie);
+    }
+
+    public void delFavorites(String uid,
+                             HttpServletResponse response) {
+        Cookie favCookie = new Cookie("favorite-uid" + uid, uid);
+        favCookie.setHttpOnly(false);
+        favCookie.setSecure(false);
+        favCookie.setPath("/");
+        favCookie.setMaxAge(0); // 24 часа
+        response.addCookie(favCookie);
+    }
+
+    public String getUsername(HttpServletRequest request) {
+        String token = extractToken(request);
+        if (token != null && !token.trim().isEmpty()) {
+            return extractUsername(token);
+        }
+        return null;
     }
 }
 //package com.example.demo.jwt;

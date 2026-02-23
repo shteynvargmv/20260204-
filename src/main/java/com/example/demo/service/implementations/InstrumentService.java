@@ -23,6 +23,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -120,6 +122,9 @@ public class InstrumentService implements DBService {
         } else {
             return null;
         }
+        if (instrument.getLot() == 0){
+           return null;
+        }
         if (dto.getInstrumentType().equals("currency") &&
               instrument.getLastPriceUnits() == 0)  {
           instrument.setLastPriceUnits(1);
@@ -200,8 +205,41 @@ public class InstrumentService implements DBService {
             default -> {
             }
         }
+
+        instrument.setPrice(this.getPrice(instrument));
+        if (instrument.getPrice().compareTo(BigDecimal.ZERO) == 0){
+           return null;
+        }
         return instrument;
     }
+
+    public BigDecimal getPrice(Instrument instrument) {
+        int units = instrument.getLastPriceUnits();
+        int nano = instrument.getLastPriceNano();
+
+        String curr;
+        int decimalDigits;
+        CurrencySymbol symbol = instrument.getSymbol();
+        if (symbol != null){
+            decimalDigits = symbol.getDecimalDigits();
+            curr = instrument.getSymbol().getSymb();
+        } else {
+            decimalDigits = 3;
+            curr = instrument.getNominalCurrency().toUpperCase();
+        }
+        BigDecimal total = new BigDecimal(units).add(
+                        new BigDecimal(nano).divide(new BigDecimal("1000000000")))
+                .setScale(decimalDigits, RoundingMode.HALF_UP);
+
+        if ( instrument.getBond() != null && instrument.getNominalUnits() != 0) {
+            total = total.divide(BigDecimal.valueOf(100)).multiply(BigDecimal.valueOf(instrument.getNominalUnits())).setScale(decimalDigits, RoundingMode.HALF_UP);;
+        } else if (instrument.getCurrency() != null && instrument.getNominalUnits() != 0) {
+            total = total.divide(BigDecimal.valueOf(instrument.getNominalUnits())).setScale(decimalDigits, RoundingMode.HALF_UP);;
+        }
+
+        return total;
+    }
+
     @Override
     public Instrument dtoToEntity(InstrumentDto dto, List<LastPriceDto> prices, List<AssetDto> assets) {
         AssetDto asset = assets.stream().filter(x -> x.getUid().equals(dto.getAssetUid()))
