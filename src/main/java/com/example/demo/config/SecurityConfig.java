@@ -26,21 +26,21 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests((authorize) -> authorize
-//                .requestMatchers("/auth/login",
-//                        "/auth/register",
-//                        "/invest/home",
-//                        "invest/sign-in",
-//                        "invest/sign-up",
-//                        "/css/**",
-//                        "/js/**",
-//                        "/fonts/**",
-//                        "/img/**").permitAll()
-
-//                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/invest/catalog", "/invest/catalog/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/auth/logout").authenticated()
-//                .anyRequest().authenticated()
-                            .anyRequest().permitAll() //<--/invest/logout/success
+                .requestMatchers(
+                        "/invest/refresh/all").hasRole("ADMIN")
+                .requestMatchers(
+                        "/invest/catalog",
+                        "/invest/catalog-single/**",
+                        "/invest/catalog/**",
+                        "/invest/refresh/**",
+                        "/invest/favorite/**",
+                        "/invest/favorite-add/**",
+                        "/invest/favorite-del/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers(
+                        "/auth/logout",
+                        "/invest/log-out").authenticated()
+                .anyRequest().permitAll() //<--/invest:sign-in,sign-up,success,contact,
+                                          //<--/auth:login,register
 
             ).exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {

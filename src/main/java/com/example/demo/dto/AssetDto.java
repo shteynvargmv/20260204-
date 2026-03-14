@@ -1,6 +1,4 @@
 package com.example.demo.dto;
-import com.example.demo.entity.Brand;
-import com.example.demo.entity.Instrument;
 import java.util.List;
 
 public class AssetDto {
@@ -14,7 +12,6 @@ public class AssetDto {
     private String cfi;
     private String codeNsd;
     private String status;
-//    private Brand brand;
     private String updatedAt;
     private String brCode;
     private String brCodeName;
@@ -54,9 +51,6 @@ public class AssetDto {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-//    public Brand getBrand() { return brand; }
-//    public void setBrand(Brand brand) { this.brand = brand; }
-
     public String getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
 
@@ -79,7 +73,6 @@ public class AssetDto {
                 ", cfi='" + cfi + '\'' +
                 ", codeNsd='" + codeNsd + '\'' +
                 ", status='" + status + '\'' +
-//                ", brand=" + brand +
                 ", updatedAt='" + updatedAt + '\'' +
                 ", brCode='" + brCode + '\'' +
                 ", brCodeName='" + brCodeName + '\'' +

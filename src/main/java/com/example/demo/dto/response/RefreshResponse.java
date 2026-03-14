@@ -7,16 +7,13 @@ public class RefreshResponse {
     private String updateDateLocalString;
     private String priceString;
     private String refreshResult;
-    private boolean isFavorite;
 
     public RefreshResponse(InstrumentDto instrumentDto,
                            String updateDateLocalString,
-                           String priceString) { //,
-//                           Boolean isFavorite) {
+                           String priceString) {
         this.instrumentDto = instrumentDto;
         this.updateDateLocalString = updateDateLocalString;
         this.priceString = priceString;
-//        this.isFavorite = isFavorite;
     }
 
     public RefreshResponse(String refreshResult) {
@@ -55,11 +52,4 @@ public class RefreshResponse {
         this.priceString = priceString;
     }
 
-//    public boolean isFavorite() {
-//        return isFavorite;
-//    }
-//
-//    public void setFavorite(boolean favorite) {
-//        this.isFavorite = favorite;
-//    }
 }

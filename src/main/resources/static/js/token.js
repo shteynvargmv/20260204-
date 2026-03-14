@@ -156,44 +156,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
-
 });
-// document.onclick = function(event) {
-//     const link = event.target.closest('a');
-//     console.log("onclick");
-//
-//     if (link && link.hasAttribute('href')) {
-//         event.preventDefault();
-//
-//         const token = localStorage.getItem('token');
-//         const originalHref = link.getAttribute('href');
-//
-//         if (token) {
-//             const tempIframe = document.createElement('iframe');
-//             tempIframe.style.display = 'none';
-//             tempIframe.onload = function() {
-//                 const xhr = new XMLHttpRequest();
-//                 xhr.open('GET', originalHref);
-//                 xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-//                 xhr.onload = function() {
-//                     if (xhr.status === 200) {
-//                         document.open();
-//                         document.write(xhr.responseText);
-//                         document.close();
-//                     } else if (xhr.status === 401 || xhr.status === 403) {
-//                         localStorage.removeItem('token');
-//                         localStorage.removeItem('role');
-//                         window.location.href = '/invest/sign-in';
-//                     }
-//                 };
-//                 xhr.send();
-//             };
-//             console.log("append");
-//             document.body.appendChild(tempIframe);
-//             tempIframe.src = 'about:blank';
-//         } else {
-//             window.location.href = '/invest/sign-in';
-//         }
-//     }
-// };
+

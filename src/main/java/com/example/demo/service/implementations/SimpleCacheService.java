@@ -41,8 +41,15 @@ public class SimpleCacheService implements CacheService {
         Filter cached = getFilter();
         if (cached != null && filter.getSelectedBondParameters() == null){
             filter.setSelectedBondParameters(cached.getSelectedBondParameters());
-        } else if (cached != null && filter.getSelectedShareParameters() == null) {
+        }
+        if (cached != null && filter.getSelectedShareParameters() == null) {
             filter.setSelectedShareParameters(cached.getSelectedShareParameters());
+        }
+        if (cached != null && filter.getSelectedAllParameters() == null) {
+            filter.setSelectedAllParameters(cached.getSelectedAllParameters());
+        }
+        if (cached != null && filter.getSelectedSectors() == null) {
+            filter.setSelectedSectors(cached.getSelectedSectors());
         }
         cache.put(CacheUtils.getCacheKey("/catalog", "filter"), filter);
     }
@@ -89,4 +96,12 @@ public class SimpleCacheService implements CacheService {
         }
         return "none";
     }
+
+    @Override
+    public void delAll() {
+        cache.del(CacheUtils.getCacheKey("/catalog", "sort"));
+        cache.del(CacheUtils.getCacheKey("/catalog", "filter"));
+        cache.del(CacheUtils.getCacheKey("/catalog", "type"));
+    }
+
 }

@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.*;
 import com.example.demo.dto.request.FilterRequest;
+import com.example.demo.dto.response.AssetResponse;
+import com.example.demo.dto.response.AssetsResponse;
 import com.example.demo.dto.response.FavoriteResponse;
 import com.example.demo.dto.response.RefreshResponse;
 import com.example.demo.entity.Favorite;
@@ -12,6 +14,9 @@ import com.example.demo.model.Currencies;
 import com.example.demo.model.CurrencyData;
 import com.example.demo.entity.CurrencySymbol;
 import com.example.demo.service.*;
+import com.example.demo.service.entservice.CurrencyService;
+import com.example.demo.service.entservice.FavoriteService;
+import com.example.demo.service.entservice.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +61,6 @@ public class HomeController {
                                      Model model,
                                      HttpServletRequest request,
                                      HttpServletResponse response) {
-
-        User user = userService.findByUsername(jwtUtil.getUsername(request));
 
         jwtUtil.setCookie(request, response);
         try {
@@ -252,16 +255,6 @@ public class HomeController {
 //------------------------------------------------------------------------------------//
             int i = 1;
             for (InstrumentDto dto : dtosAll) {
-//                AssetDto asset = tbankApiService.getAssetById(dto.getAssetUid()).getBody().getAsset();
-//                i += 1;
-//                if (i == 50) {
-//                    try {
-//                        Thread.sleep(30_000);
-//                    } catch (InterruptedException e) {
-//                        System.out.println(e.getMessage());
-//                    }
-//                    i = 1;
-//                }
                 Instrument instrument = instrumentService.dtoToEntity(dto, pricesAll, assets);
                 if (instrument != null) {
                     instruments.add(instrument);
@@ -275,7 +268,7 @@ public class HomeController {
             return ResponseEntity.ok().build();
 
         } catch (NullPointerException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(new RefreshResponse(e.getMessage()));
         }
     }
 
@@ -377,13 +370,36 @@ public class HomeController {
         Map<String, String> allParameters = new HashMap<>();
         allParameters.put("forQualInvestorFlag", "Неквалифицированный инвестор");
 
+        Map<String, String> sectors = new HashMap<>();
+        sectors.put("financial", "Финансовый сектор");
+        sectors.put("consumer", "Потребительский сектор");
+        sectors.put("energy", "Энергетика");
+        sectors.put("telecom", "Телекоммуникации");
+        sectors.put("municipal", "Муниципальный сектор");
+        sectors.put("utilities", "Коммунальные услуги");
+        sectors.put("materials", "Материалы");
+        sectors.put("government", "Государственный сектор");
+        sectors.put("industrials", "Промышленность");
+        sectors.put("real_estate", "Недвижимость");
+        sectors.put("it", "Информационные технологии");
+        sectors.put("health_care", "Здравоохранение");
+        sectors.put("ecomaterials", "Эко-материалы");
+        sectors.put("green_energy", "Зеленая энергетика");
+        sectors.put("electrocars", "Электромобили");
+        sectors.put("green_buildings", "Зеленое строительство");
+        sectors.put("other", "Другое");
+        sectors.keySet().retainAll(instrumentService.findSectorsAll());
+
         if (page == null) {
             model.addAttribute("showHome", true);
             return "main";
 
         } else {
             List<Instrument> instruments = page.getContent();
-            jwtUtil.setFavorites(instruments, response);
+
+            User user = userService.findByUsername(jwtUtil.getUsername(request));
+            jwtUtil.setFavorites(favoriteService.findInstrumentsByUserId(user.getId()), response);
+
             model.addAttribute("showHeader", true);
             model.addAttribute("showFooter", true);
             model.addAttribute("showCatalog", true);
@@ -397,11 +413,12 @@ public class HomeController {
             model.addAttribute("shareParameters", shareParameters);
             model.addAttribute("bondParameters", bondParameters);
             model.addAttribute("allParameters", allParameters);
-            model.addAttribute("sectors", instrumentService.findSectorsAll());
+            model.addAttribute("sectors", sectors);
             model.addAttribute("selectedSectors", cacheService.getFilter().getSelectedSectors());
             model.addAttribute("selectedShareParameters", cacheService.getFilter().getSelectedShareParameters());
             model.addAttribute("selectedBondParameters", cacheService.getFilter().getSelectedBondParameters());
             model.addAttribute("selectedAllParameters", cacheService.getFilter().getSelectedAllParameters());
+            model.addAttribute("searchValue", cacheService.getFilter().getSearchValue());
             return "main";
         }
     }
@@ -425,11 +442,14 @@ public class HomeController {
 
         } else {
             if (instrument.getDescription() == null) {
-                AssetDto asset = tbankApiService.getAssetById(instrument.getAssetUid()).getBody().getAsset();
-                if (asset != null) {
-                    instrument.setDescription(asset.getDescription());
-                    instrument.setBrCodeName(asset.getBrCodeName());
-                    instrument = instrumentService.save(instrument);
+                ResponseEntity<AssetResponse> resp = tbankApiService.getAssetById(instrument.getAssetUid());
+                if (resp != null) {
+                    AssetDto asset = resp.getBody().getAsset();
+                    if (asset != null) {
+                        instrument.setDescription(asset.getDescription());
+                        instrument.setBrCodeName(asset.getBrCodeName());
+                        instrument = instrumentService.save(instrument);
+                    }
                 }
                 instrument.setFavorites(
                         favoriteService.findByUserIdAndInstrumentUid(

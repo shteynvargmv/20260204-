@@ -4,11 +4,7 @@
 <body>
 
 <!-- backtotop - start -->
-<!--<div class="xb-backtotop">-->
-<!--    <a href="shop-single.html#" class="scroll">-->
-<!--        <i class="far fa-arrow-up"></i>-->
-<!--    </a>-->
-<!--</div>-->
+
 <!-- backtotop - end -->
 
 <!-- preloader start -->
@@ -56,26 +52,10 @@
                                                 <img th:src="@{'//invest-brands.cdn-tinkoff.ru/' +
                                                          ${instrument.getBrand().getLogo()} + 'x640' + ${instrument.getBrand().getLogoExt()}}"
                                                      alt=""
-                                                     onerror="this.onerror=null; this.src='/img/shop/noLogo.jpg';">
+                                                     onerror="this.onerror=null; this.src='/img/catalog/noLogo.jpg';">
                                             </a>
                                         </div>
-                                    </div>
-                                    <!--                                    <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">-->
-                                    <!--                                        <div class="pl_thumb">-->
-                                    <!--                                            <img src="assets/img/shop/product-single2.jpg" alt="">-->
-                                    <!--                                        </div>-->
-                                    <!--                                    </div>-->
-                                    <!--                                    <div class="tab-pane" id="contact" role="tabpanel" aria-labelledby="contact-tab">-->
-                                    <!--                                        <div class="pl_thumb">-->
-                                    <!--                                            <img src="assets/img/shop/product-single3.jpg" alt="">-->
-                                    <!--                                        </div>-->
-                                    <!--                                    </div>-->
-                                    <!--                                    <div class="tab-pane" id="profile2" role="tabpanel" aria-labelledby="profile-tab3">-->
-                                    <!--                                        <div class="pl_thumb">-->
-                                    <!--                                            <img src="assets/img/shop/product-single4.jpg" alt="">-->
-                                    <!--                                        </div>-->
-                                    <!--                                    </div>-->
-                                </div>
+                                    </div></div>
                             </div>
                         </div>
                     </div>
@@ -94,18 +74,9 @@
                             <h4><img th:src="@{'//invest-brands.cdn-tinkoff.ru/countries/flags/' +
                                                          ${instrument.getCountryOfRisk()} + '.png'}"
                                      alt="" width="25" style="border-radius: 50%"
-                                     onerror="this.onerror=null; this.src='/img/shop/noLogo.jpg';">
+                                     onerror="this.onerror=null; this.src='/img/catalog/noLogo.jpg';">
                             </h4>
 
-
-<!--                            <div class="rating">-->
-<!--                                <i class="fas fa-star"></i>-->
-<!--                                <i class="fas fa-star"></i>-->
-<!--                                <i class="fas fa-star"></i>-->
-<!--                                <i class="fas fa-star"></i>-->
-<!--                                <i class="fas fa-star"></i>-->
-<!--                                &lt;!&ndash;                                <span>(2 Customer review)</span>&ndash;&gt;-->
-<!--                            </div>-->
                             <h5 class="price mt-30 pt-20">
                                 <span class="current" th:text="'Цена: '+${instrument.getPriceString()}"
                                       id="price"></span>
@@ -125,10 +96,6 @@
                             <div class="product-option">
                                 <form class="form">
                                     <div class="product-row">
-                                        <!--                                        <div>-->
-                                        <!--                                            <input class="product-count" type="text" value="1" name="product-count">-->
-                                        <!--                                        </div>-->
-                                        <!--                                        <div class="add-to-cart-btn">-->
                                         <div class="add-to-cart-btn d-flex gap-3">
                                             <button onclick="favorite(this); return false;" class="xb-btn ms-0"
                                                     style="flex: 1; min-width: 300px; padding: 14px 20px; white-space: nowrap;"
@@ -142,27 +109,12 @@
                                                 <i class="bi bi-arrow-repeat me-2"></i>Обновить
                                             </button>
                                         </div>
-                                        <!--                                            <button class="xb-btn"><i class="far fa-shopping-bag">В избранное</i>-->
-                                        <!--                                            </button>-->
-                                        <!--                                            <button onclick="refresh(this)" class="xb-btn"><i class="bi bi-arrow-repeat">Обновить</i>-->
-                                        <!--                                            </button>-->
-                                        <!--                                        </div>-->
-                                        <!--                                        <div class="add-to-cart-btn d-flex gap-3">-->
-                                        <!--                                            <button class="xb-btn flex-fill py-3 px-4">-->
-                                        <!--                                                <i class="far fa-shopping-bag me-2"></i>В избранное-->
-                                        <!--                                            </button>-->
-                                        <!--                                            <button onclick="refresh(this)" class="xb-btn flex-fill py-3 px-4">-->
-                                        <!--                                                <i class="bi bi-arrow-repeat me-2"></i>Обновить-->
-                                        <!--                                            </button>-->
-                                        <!--                                        </div>-->
                                     </div>
                                 </form>
                             </div>
 
                             <div class="thb-product-meta-after mt-20">
                                 <div class="product_meta">
-                                    <!--                                    <span class="posted_in">Categories: <a href="shop-single.html#!">Samsung</a>, <a href="shop-single.html#!">Apple</a>, <a href="shop-single.html#!">Huawei</a></span>-->
-                                    <!--                                    <span class="tagged_as">Tags: <a href="shop-single.html#!">Button</a>, <a href="shop-single.html#!">Red</a>, <a href="shop-single.html#!">Tshirt</a></span>-->
                                 </div>
                             </div>
 
@@ -174,136 +126,12 @@
                 <div class="row">
                     <div class="col col-xs-12">
                         <div class="single-product-info">
-                            <!-- Nav tabs -->
-                            <!--                            <div class="tablist">-->
-                            <!--                                <ul class="nav nav-tabs" id="pills-tab" role="tablist">-->
-                            <!--                                    <li><button  class="active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#tb-01">Product Details</button></li>-->
-                            <!--                                    <li><button id="tab-two" data-bs-toggle="pill" data-bs-target="#tb-02">Additional imformation</button></li>-->
-                            <!--                                    <li><button  id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#tb-03">Review (09)</button></li>-->
-                            <!--                                </ul>-->
-                            <!--                            </div>-->
-
                             <!-- Tab panes -->
                             <div class="tab-content" id="pills-tabContent">
                                 <div class="tab-pane fade show active" id="tb-01">
-<!--                                    <p>Introducing our stunning collection of device mockups in brutal stylish-->
-<!--                                        environments. Immerse your designs in trend-setting visuals with our 16 high- -->
-<!--                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and-->
-<!--                                        Sketch formats, these mockups will transform your UI/UX projects into works of-->
-<!--                                        art.-->
-<!--                                        Elevate your creativity and captivate your audience with our ultra-realistic-->
-<!--                                        mockups.</p>-->
-<!--                                    <p> Immerse your designs in trend-setting visuals with our 16 high- -->
-<!--                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and-->
-<!--                                        Sketch formats, these mockups will transform your UI/UX projects into works of-->
-<!--                                        art.-->
-<!--                                        Elevate your creativity and captivate your audience with our ultra-realistic-->
-<!--                                        mockups.</p>-->
                                 </div>
                                 <div class="tab-pane fade" id="tb-02">
-<!--                                    <p>Introducing our stunning collection of device mockups in brutal stylish-->
-<!--                                        environments. Immerse your designs in trend-setting visuals with our 16 high- -->
-<!--                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and-->
-<!--                                        Sketch formats, these mockups will transform your UI/UX projects into works of-->
-<!--                                        art.-->
-<!--                                        Elevate your creativity and captivate your audience with our ultra-realistic-->
-<!--                                        mockups.</p>-->
-<!--                                    <p> Immerse your designs in trend-setting visuals with our 16 high- -->
-<!--                                        resolution scenes featuring the sleek MacBook Air. Available in PSD, Figma, and-->
-<!--                                        Sketch formats, these mockups will transform your UI/UX projects into works of-->
-<!--                                        art.-->
-<!--                                        Elevate your creativity and captivate your audience with our ultra-realistic-->
-<!--                                        mockups.</p>-->
                                 </div>
-                                <!--                                <div class="tab-pane fade" id="tb-03">-->
-                                <!--                                    <div class="row">-->
-                                <!--                                        <div class="col-lg-6 col-sm-12 col-xs-12">-->
-                                <!--                                            <div class="client-rv">-->
-                                <!--                                                <div class="client-pic">-->
-                                <!--                                                    <img src="assets/img/avatar/shop_avatar1.jpg" alt>-->
-                                <!--                                                </div>-->
-                                <!--                                                <div class="details">-->
-                                <!--                                                    <div class="name-rating-time">-->
-                                <!--                                                        <div class="name-rating">-->
-                                <!--                                                            <div>-->
-                                <!--                                                                <h4>Mice</h4>-->
-                                <!--                                                            </div>-->
-                                <!--                                                            <div class="rating">-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                            </div>-->
-                                <!--                                                        </div>-->
-                                <!--                                                        <div class="time">-->
-                                <!--                                                            <span>1 day ago</span>-->
-                                <!--                                                        </div>-->
-                                <!--                                                    </div>-->
-                                <!--                                                    <div class="review-body">-->
-                                <!--                                                        <p>Helplessly as he looked What's happened to me he thought. It wasn't a dreamtrated magazine and housed in a nice, gilded frame. It showed a lady fitted</p>-->
-                                <!--                                                    </div>-->
-                                <!--                                                </div>-->
-                                <!--                                            </div>-->
-
-                                <!--                                            <div class="client-rv">-->
-                                <!--                                                <div class="client-pic">-->
-                                <!--                                                    <img src="assets/img/avatar/shop_avatar2.jpg" alt>-->
-                                <!--                                                </div>-->
-                                <!--                                                <div class="details">-->
-                                <!--                                                    <div class="name-rating-time">-->
-                                <!--                                                        <div class="name-rating">-->
-                                <!--                                                            <div>-->
-                                <!--                                                                <h4>Hone</h4>-->
-                                <!--                                                            </div>-->
-                                <!--                                                            <div class="rating">-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                            </div>-->
-                                <!--                                                        </div>-->
-                                <!--                                                        <div class="time">-->
-                                <!--                                                            <span>1 day ago</span>-->
-                                <!--                                                        </div>-->
-                                <!--                                                    </div>-->
-                                <!--                                                    <div class="review-body">-->
-                                <!--                                                        <p>Helplessly as he looked What's happened to me he thought. It wasn't a dreamtrated magazine and housed in a nice, gilded frame. It showed a lady fitted</p>-->
-                                <!--                                                    </div>-->
-                                <!--                                                </div>-->
-                                <!--                                            </div>-->
-
-                                <!--                                            <div class="client-rv">-->
-                                <!--                                                <div class="client-pic">-->
-                                <!--                                                    <img src="assets/img/avatar/shop_avatar3.jpg" alt>-->
-                                <!--                                                </div>-->
-                                <!--                                                <div class="details">-->
-                                <!--                                                    <div class="name-rating-time">-->
-                                <!--                                                        <div class="name-rating">-->
-                                <!--                                                            <div>-->
-                                <!--                                                                <h4>Piloa</h4>-->
-                                <!--                                                            </div>-->
-                                <!--                                                            <div class="rating">-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                                <i class="fi flaticon-star"></i>-->
-                                <!--                                                            </div>-->
-                                <!--                                                        </div>-->
-                                <!--                                                        <div class="time">-->
-                                <!--                                                            <span>2 days ago</span>-->
-                                <!--                                                        </div>-->
-                                <!--                                                    </div>-->
-                                <!--                                                    <div class="review-body">-->
-                                <!--                                                        <p>Helplessly as he looked What's happened to me he thought. It wasn't a dreamtrated magazine and housed in a nice, gilded frame. It showed a lady fitted</p>-->
-                                <!--                                                    </div>-->
-                                <!--                                                </div>-->
-                                <!--                                            </div>-->
-                                <!--                                        </div> &lt;!&ndash; end col &ndash;&gt;-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
                             </div>
                         </div>
                     </div>

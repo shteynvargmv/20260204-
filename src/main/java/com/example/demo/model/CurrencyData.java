@@ -1,10 +1,5 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-
-import java.util.HashSet;
-import java.util.Set;
-
 public class CurrencyData {
     private String symbol;
     private String name;

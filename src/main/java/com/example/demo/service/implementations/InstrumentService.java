@@ -11,17 +11,15 @@ import com.example.demo.model.Filter;
 import com.example.demo.repository.InstrumentRepository;
 import com.example.demo.repository.BondRepository;
 import com.example.demo.repository.ShareRepository;
-import com.example.demo.service.CurrencyService;
+import com.example.demo.service.entservice.CurrencyService;
 import com.example.demo.service.DBService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,11 +39,6 @@ public class InstrumentService implements DBService {
     BondRepository bondRepository;
     @Autowired
     ShareRepository shareRepository;
-    @Autowired
-    BondRepository brandRepository;
-    @Autowired
-    @Qualifier("restTemplateLong")
-    private RestTemplate restTemplate;
     @Autowired
     Environment env;
     @Autowired
@@ -140,24 +133,6 @@ public class InstrumentService implements DBService {
 
         CurrencySymbol currencySymbol = currencyService.findByCode(instrument.getNominalCurrency().toUpperCase());
         instrument.setSymbol(currencySymbol);
-
-//        Optional<CurrencyData> currencyDataOpt = currencies.getCurrencyDataList()
-//                .stream()
-//                .filter(x -> x.getCode().equals(dto.getNominal().getCurrency().toUpperCase()))  // Используйте equals()
-//                .findFirst();
-//        if (currencyDataOpt.isPresent()){
-//            CurrencyData currencyData = currencyDataOpt.get();
-//            CurrencySymbol currencySymbol = new CurrencySymbol();
-//            currencySymbol.setName(currencyData.getName());
-//            currencySymbol.setSymbolNative(currencyData.getSymbol_native());
-//            currencySymbol.setDecimalDigits(currencyData.getDecimal_digits());
-//            currencySymbol.setRounding(currencyData.getRounding());
-//            currencySymbol.setCode(currencyData.getCode());
-//            currencySymbol.setNamePlural(currencyData.getName_plural());
-//            currencySymbol.setSymb(currencyData.getSymbol());
-//            System.out.println(currencySymbol.getSymb());
-//            instrument.setSymbol(currencySymbol);
-//        }
 
         switch (dto.getInstrumentType()) {
             case "share" -> {
@@ -256,10 +231,10 @@ public class InstrumentService implements DBService {
     }
 
     @Override
-    public Page<Instrument> findAllBySectors(List<String> sectors, List<String> parameters, int page, Sort sort) {
-        System.out.println("findAllBySec " + parameters);
+    public Page<Instrument> findAllBy(List<String> sectors, List<String> parameters,
+                                             String searchValue, int page, Sort sort) {
         Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
-        Page<Instrument> instruments = instrumentRepository.findAllBySectors(
+        Page<Instrument> instruments = instrumentRepository.findAllBy(
                 (sectors.size() == 0) ? null : sectors,
                 parameters.contains("amortizationFlag"),
                 parameters.contains("noCallFlag"),
@@ -270,28 +245,30 @@ public class InstrumentService implements DBService {
                 parameters.contains("divYieldFlag"),
                 parameters.contains("liquidityFlag"),
                 parameters.contains("forQualInvestorFlag"),
+                searchValue,
                 pageable);
         return instruments;
     }
 
     @Override
-    public Page<Instrument> findShareBySectors(List<String> sectors, List<String> parameters, int page, Sort sort) {
-        System.out.println("findShareBySec " + parameters);
+    public Page<Instrument> findShareBy(List<String> sectors, List<String> parameters,
+                                               String searchValue, int page, Sort sort) {
         Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
-        Page<Instrument> instruments = instrumentRepository.findShareBySectors(
+        Page<Instrument> instruments = instrumentRepository.findShareBy(
                 (sectors.size() == 0) ? null : sectors,
                 parameters.contains("divYieldFlag"),
                 parameters.contains("liquidityFlag"),
                 parameters.contains("forQualInvestorFlag"),
+                searchValue,
                 pageable);
         return instruments;
     }
 
     @Override
-    public Page<Instrument> findBondBySectors(List<String> sectors, List<String> parameters, int page, Sort sort) {
-        System.out.println("findBondBySec " + parameters);
+    public Page<Instrument> findBondBy(List<String> sectors, List<String> parameters,
+                                              String searchValue, int page, Sort sort) {
         Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
-        Page<Instrument> instruments = instrumentRepository.findBondBySectors(
+        Page<Instrument> instruments = instrumentRepository.findBondBy(
                 (sectors.size() == 0) ? null : sectors,
                 parameters.contains("amortizationFlag"),
                 parameters.contains("noCallFlag"),
@@ -300,7 +277,17 @@ public class InstrumentService implements DBService {
                 parameters.contains("subordinatedFlag"),
                 parameters.contains("couponEveryMonthFlag"),
                 parameters.contains("forQualInvestorFlag"),
+                searchValue,
                 pageable);
+        return instruments;
+    }
+
+    @Override
+    public Page<Instrument> findCurrencyBy(String searchValue, int page, Sort sort) {
+        Pageable pageable = PageRequest.of(page, HomeController.ON_PAGE, sort);
+        Page<Instrument> instruments = instrumentRepository.findCurrencyBy(
+                 searchValue,
+                 pageable);
         return instruments;
     }
 
@@ -311,15 +298,17 @@ public class InstrumentService implements DBService {
         List<String> shareParameters = filter.getSelectedShareParameters();
         List<String> bondParameters = filter.getSelectedBondParameters();
         List<String> allParameters = filter.getSelectedAllParameters();
+        String searchValue = filter.getSearchValue();
         switch (type) {
             case "all" -> {
                 if (sectors.isEmpty() &&
                         (shareParameters == null || shareParameters.isEmpty()) &&
                         (bondParameters == null || bondParameters.isEmpty()) &&
-                        (allParameters == null || allParameters.isEmpty())) {
+                        (allParameters == null || allParameters.isEmpty()) &&
+                        (searchValue == null || searchValue.isEmpty())) {
                     return findAll(Integer.parseInt(pageNum) - 1, sort);
                 } else {
-                    return findAllBySectors(sectors,
+                    return findAllBy(sectors,
                             Stream.concat(
                                     Stream.concat(
                                            shareParameters.stream(),
@@ -328,6 +317,7 @@ public class InstrumentService implements DBService {
                                             allParameters.stream()
                                     )
                                     .collect(Collectors.toList()),
+                            searchValue,
                             Integer.parseInt(pageNum) - 1,
                             sort);
                 }
@@ -336,13 +326,17 @@ public class InstrumentService implements DBService {
             case "share" -> {
                 if (sectors.isEmpty() &&
                         (shareParameters == null || shareParameters.isEmpty()) &&
-                        (allParameters == null || allParameters.isEmpty())) {
+                        (allParameters == null || allParameters.isEmpty()) &&
+                        (searchValue == null || searchValue.isEmpty())) {
+                    System.out.println("InstrumentService - findInstruments: " + searchValue);
                     return findByShareIsNotEmpty(Integer.parseInt(pageNum) - 1, sort);
                 } else {
-                    return findShareBySectors(sectors,
+                    System.out.println("InstrumentService - findInstruments: " + searchValue);
+                    return findShareBy(sectors,
                             Stream.concat(shareParameters.stream(),
                                             allParameters.stream())
                                     .collect(Collectors.toList()),
+                            searchValue,
                             Integer.parseInt(pageNum) - 1,
                             sort);
                 }
@@ -350,21 +344,30 @@ public class InstrumentService implements DBService {
             case "bond" -> {
                 if (sectors.isEmpty() &&
                         (bondParameters == null || bondParameters.isEmpty()) &&
-                        (allParameters == null || allParameters.isEmpty())) {
+                        (allParameters == null || allParameters.isEmpty()) &&
+                        (searchValue == null || searchValue.isEmpty())) {
                     return findByBondIsNotEmpty(Integer.parseInt(pageNum) - 1, sort);
                 } else {
-                    return findBondBySectors(
+                    return findBondBy(
                             sectors,
                             Stream.concat(
                                     bondParameters.stream(),
                                     allParameters.stream())
                             .collect(Collectors.toList()),
+                            searchValue,
                             Integer.parseInt(pageNum) - 1,
                             sort);
                 }
             }
             case "currency" -> {
-                return findByCurrencyIsNotEmpty(Integer.parseInt(pageNum) - 1, sort);
+                if (searchValue == null || searchValue.isEmpty()) {
+                    return findByCurrencyIsNotEmpty(Integer.parseInt(pageNum) - 1, sort);
+                } else {
+                    return findCurrencyBy(
+                            searchValue,
+                            Integer.parseInt(pageNum) - 1,
+                            sort);
+                }
             }
             default -> {
                 return null;

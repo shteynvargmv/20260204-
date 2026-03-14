@@ -1,13 +1,10 @@
-package com.example.demo.service;
+package com.example.demo.service.entservice;
 
 import com.example.demo.entity.Favorite;
 import com.example.demo.entity.Instrument;
 import com.example.demo.entity.User;
-import com.example.demo.repository.CurrencyRepository;
 import com.example.demo.repository.FavoriteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

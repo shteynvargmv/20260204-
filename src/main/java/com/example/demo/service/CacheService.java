@@ -11,4 +11,5 @@ public interface CacheService {
     void setType(String type);
     String getType();
     String getSort();
+    void delAll();
 }

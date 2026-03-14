@@ -34,44 +34,12 @@ async function refresh(element){
         document.getElementById('global-loader').style.display = 'none';
     }
 }
-// async function refresh(element) {
-//     const result = document.getElementById('refresh-result');
-//     const toastLiveExample = document.getElementById('liveToast');
-//     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
-//     document.getElementById('global-loader').style.display = 'flex';
-//
-//     try {
-//         const response = await fetch('/invest/refresh/all', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             credentials: 'include'
-//         });
-//
-//         const data = await response.text();
-//
-//         if (response.ok) {
-//             result.textContent = 'Обновление выполнено успешно';
-//             toastBootstrap.show()
-//
-//         } else {
-//             result.textContent = 'Ошибка обновления ' + data;
-//             toastBootstrap.show()
-//         }
-//     } catch (error) {
-//         result.textContent = 'Ошибка сети или сервера';
-//         toastBootstrap.show()
-//     } finally {
-//         document.getElementById('global-loader').style.display = 'none';
-//     }
-// }
 
 async function refreshAll(element) {
     const result = document.getElementById('refresh-result');
     const toastLiveExample = document.getElementById('liveToast');
     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
-    // document.getElementById('global-loader').style.display = 'flex';
+
 
     try {
         result.textContent = 'Обновление запущено';
@@ -92,13 +60,11 @@ async function refreshAll(element) {
             toastBootstrap.show()
 
         } else {
-            result.textContent = 'Ошибка обновления ' + data;
+            result.textContent = 'Ошибка обновления ' + data.refreshResult;
             toastBootstrap.show()
         }
     } catch (error) {
         result.textContent = 'Ошибка сети или сервера';
         toastBootstrap.show()
-    // } finally {
-        // document.getElementById('global-loader').style.display = 'none';
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +18,14 @@ import java.util.Optional;
 public interface InstrumentRepository extends JpaRepository<Instrument, String> {
     Instrument save(Instrument instrument);
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Query("SELECT i FROM Instrument i " +
             "WHERE " +
             "(:forQualInvestorFlag = false OR i.forQualInvestorFlag != :forQualInvestorFlag) AND " +
+            "(" +
+            "(:searchValue IS NULL OR LOWER(i.name) LIKE LOWER(CONCAT('%', :searchValue, '%'))) OR " +
+            "(:searchValue IS NULL OR LOWER(i.ticker) LIKE LOWER(CONCAT('%', :searchValue, '%')))" +
+            ") AND" +
             "( i.bond.uid IN ( SELECT b.uid FROM Bond b WHERE " +
             "    (:sectors is null or b.sector IN :sectors) AND " +
             "    (:amortizationFlag = false OR b.amortizationFlag != :amortizationFlag) AND " +
@@ -32,7 +39,7 @@ public interface InstrumentRepository extends JpaRepository<Instrument, String> 
             "    (:divYieldFlag = false OR s.divYieldFlag = :divYieldFlag) AND " +
             "    (:liquidityFlag = false OR s.liquidityFlag = :liquidityFlag))" +
             "OR not i.currency.uid is null )")
-    Page<Instrument> findAllBySectors(@Param("sectors") List<String> sectors,
+    Page<Instrument> findAllBy(@Param("sectors") List<String> sectors,
                                       @Param("amortizationFlag") Boolean amortizationFlag,
                                       @Param("noCallFlag") Boolean noCallFlag,
                                       @Param("floatingCouponFlag") Boolean floatingCouponFlag,
@@ -42,10 +49,12 @@ public interface InstrumentRepository extends JpaRepository<Instrument, String> 
                                       @Param("divYieldFlag") Boolean divYieldFlag,
                                       @Param("liquidityFlag") Boolean liquidityFlag,
                                       @Param("forQualInvestorFlag") Boolean forQualInvestorFlag,
+                                      @Param("searchValue") String searchValue,
                                       Pageable pageable);
-
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     Page<Instrument> findByBondIsNotNull(Pageable pageable);
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Query("SELECT i FROM Instrument i " +
             "JOIN Bond b " +
             "ON b.uid = i.bond.uid " +
@@ -57,8 +66,12 @@ public interface InstrumentRepository extends JpaRepository<Instrument, String> 
             "(:floatingCouponFlag = false OR b.floatingCouponFlag != :floatingCouponFlag) AND " +
             "(:perpetualFlag = false OR b.perpetualFlag = :perpetualFlag) AND " +
             "(:subordinatedFlag = false OR b.subordinatedFlag = :subordinatedFlag) AND " +
-            "(:couponEveryMonthFlag = false OR b.couponEveryMonthFlag = :couponEveryMonthFlag)" )
-    Page<Instrument> findBondBySectors(@Param("sectors") List<String> sectors,
+            "(:couponEveryMonthFlag = false OR b.couponEveryMonthFlag = :couponEveryMonthFlag) AND " +
+            "(" +
+            "(:searchValue IS NULL OR LOWER(i.name) LIKE LOWER(CONCAT('%', :searchValue, '%'))) OR " +
+            "(:searchValue IS NULL OR LOWER(i.ticker) LIKE LOWER(CONCAT('%', :searchValue, '%')))" +
+            ") ")
+    Page<Instrument> findBondBy(@Param("sectors") List<String> sectors,
                                        @Param("amortizationFlag") Boolean amortizationFlag,
                                        @Param("noCallFlag") Boolean noCallFlag,
                                        @Param("floatingCouponFlag") Boolean floatingCouponFlag,
@@ -66,10 +79,12 @@ public interface InstrumentRepository extends JpaRepository<Instrument, String> 
                                        @Param("subordinatedFlag") Boolean subordinatedFlag,
                                        @Param("couponEveryMonthFlag") Boolean couponEveryMonthFlag,
                                        @Param("forQualInvestorFlag") Boolean forQualInvestorFlag,
+                                       @Param("searchValue") String searchValue,
                                        Pageable pageable);
-
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     Page<Instrument> findByBondIsNotNullOrShareIsNotNullOrCurrencyIsNotNull(Pageable pageable);
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Query("SELECT i FROM Instrument i " +
             "JOIN Share s " +
             "ON s.uid = i.share.uid " +
@@ -77,17 +92,36 @@ public interface InstrumentRepository extends JpaRepository<Instrument, String> 
             "(:forQualInvestorFlag = false OR i.forQualInvestorFlag != :forQualInvestorFlag) AND " +
             "(:sectors is null or s.sector IN :sectors) AND " +
             "(:divYieldFlag = false OR s.divYieldFlag = :divYieldFlag) AND " +
-            "(:liquidityFlag = false OR s.liquidityFlag = :liquidityFlag)")
-    Page<Instrument> findShareBySectors(@Param("sectors") List<String> sectors,
+            "(:liquidityFlag = false OR s.liquidityFlag = :liquidityFlag) AND " +
+            "(" +
+            "(:searchValue IS NULL OR LOWER(i.name) LIKE LOWER(CONCAT('%', :searchValue, '%'))) OR " +
+            "(:searchValue IS NULL OR LOWER(i.ticker) LIKE LOWER(CONCAT('%', :searchValue, '%')))" +
+            ") ")
+    Page<Instrument> findShareBy(@Param("sectors") List<String> sectors,
                                         @Param("divYieldFlag") boolean divYieldFlag,
                                         @Param("liquidityFlag") boolean liquidityFlag,
                                         @Param("forQualInvestorFlag") Boolean forQualInvestorFlag,
+                                        @Param("searchValue") String searchValue,
                                         Pageable pageable);
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     Page<Instrument> findByShareIsNotNull(Pageable pageable);
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Query("SELECT i FROM Instrument i " +
+            "WHERE " +
+            "(" +
+            "(:searchValue IS NULL OR LOWER(i.name) LIKE LOWER(CONCAT('%', :searchValue, '%'))) OR " +
+            "(:searchValue IS NULL OR LOWER(i.ticker) LIKE LOWER(CONCAT('%', :searchValue, '%')))" +
+            ") " +
+            "AND " +
+            "not i.currency.uid is null ")
+    Page<Instrument> findCurrencyBy(@Param("searchValue") String searchValue,
+                               Pageable pageable);
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     Page<Instrument> findByCurrencyIsNotNull(Pageable pageable);
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     Optional<Instrument> findFirstByUid(String uid);
 
 }

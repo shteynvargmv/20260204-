@@ -20,9 +20,10 @@ public interface DBService {
     Instrument dtoToEntity(InstrumentDto dto, List<LastPriceDto> prices, AssetDto asset);
     Instrument dtoToEntity(InstrumentDto dto, List<LastPriceDto> prices, List<AssetDto> assets);
     List<String> findSectorsAll();
-    Page<Instrument> findAllBySectors(List<String> sectors, List<String> parameters, int page, Sort sort);
-    Page<Instrument> findShareBySectors(List<String> sectors, List<String> parameters, int page, Sort sort);
-    Page<Instrument> findBondBySectors(List<String> sectors, List<String> parameters, int page, Sort sort);
+    Page<Instrument> findAllBy(List<String> sectors, List<String> parameters, String searchValue, int page, Sort sort);
+    Page<Instrument> findShareBy(List<String> sectors, List<String> parameters, String searchValue, int page, Sort sort);
+    Page<Instrument> findBondBy(List<String> sectors, List<String> parameters, String searchValue, int page, Sort sort);
+    Page<Instrument> findCurrencyBy(String searchValue, int page, Sort sort);
     Page<Instrument> findInstruments(String type, Filter filter, String pageNum, Sort sort);
     Instrument findFirstByUid(String uid);
     Instrument save(Instrument instrument);

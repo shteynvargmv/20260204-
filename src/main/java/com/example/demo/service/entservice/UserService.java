@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.entservice;
 
 import com.example.demo.dto.response.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;

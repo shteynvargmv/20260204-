@@ -3,8 +3,10 @@
     e(window).on("load", function () {
         e("#xb-loadding").fadeOut("slow", function () {
             e(this).remove()
-        }), new WOW({boxClass: "wow", animateClass: "animated", offset: 0, mobile: !1, live: !0}).init()
-    }), e(window).on("scroll", function () {
+        }),
+            new WOW({boxClass: "wow", animateClass: "animated", offset: 0, mobile: !1, live: !0}).init()
+    }),
+        e(window).on("scroll", function () {
         e(this).scrollTop() > 500 ? e(".xb-backtotop").addClass("active") : e(".xb-backtotop").removeClass("active")
     }), e(function () {
         e(".scroll").on("click", function () {

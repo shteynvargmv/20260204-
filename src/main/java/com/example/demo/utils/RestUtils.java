@@ -12,10 +12,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.List;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Component
 public class RestUtils {
@@ -68,7 +71,7 @@ public class RestUtils {
         return result;
     }
 
-    public ResponseEntity<LastPricesResponse> getLastPrices(List<String> uids){
+    public ResponseEntity<LastPricesResponse> getLastPrices(List<String> uids) {
         String url = env.getProperty("tbank.api.base.url") +
                 "/tinkoff.public.invest.api.contract.v1.MarketDataService/GetLastPrices";
 
@@ -90,7 +93,7 @@ public class RestUtils {
         return result;
     }
 
-    public ResponseEntity<InstrumentResponse> getBondByUid(String uid){
+    public ResponseEntity<InstrumentResponse> getBondByUid(String uid) {
         String url = env.getProperty("tbank.api.base.url") +
                 "/tinkoff.public.invest.api.contract.v1.InstrumentsService/BondBy";
 
@@ -112,7 +115,7 @@ public class RestUtils {
         return result;
     }
 
-    public ResponseEntity<InstrumentResponse> getCurrencyByUid(String uid){
+    public ResponseEntity<InstrumentResponse> getCurrencyByUid(String uid) {
         String url = env.getProperty("tbank.api.base.url") +
                 "/tinkoff.public.invest.api.contract.v1.InstrumentsService/CurrencyBy";
 
@@ -134,7 +137,7 @@ public class RestUtils {
         return result;
     }
 
-    public ResponseEntity<InstrumentResponse> getShareByUid(String uid){
+    public ResponseEntity<InstrumentResponse> getShareByUid(String uid) {
         String url = env.getProperty("tbank.api.base.url") +
                 "/tinkoff.public.invest.api.contract.v1.InstrumentsService/ShareBy";
 
@@ -146,7 +149,6 @@ public class RestUtils {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
         HttpEntity<InstrumantByUidRequest> requestEntity = new HttpEntity<>(requestBody, headers);
-
         ResponseEntity<InstrumentResponse> result = restTemplateLong.exchange(
                 url,
                 HttpMethod.POST,
@@ -175,6 +177,7 @@ public class RestUtils {
                 InstrumentsResponse.class
         );
         return result;
+
     }
 
     public ResponseEntity<AssetResponse> getAssetByUid(String id) {
@@ -189,13 +192,17 @@ public class RestUtils {
         headers.set("Authorization", String.format("Bearer %s", env.getProperty("tbank.token")));
         HttpEntity<AssetRequest> requestEntity = new HttpEntity<>(requestBody, headers);
 
-        ResponseEntity<AssetResponse> result = restTemplateLong.exchange(
-                url,
-                HttpMethod.POST,
-                requestEntity,
-                AssetResponse.class
-        );
-        return result;
+        try {
+            ResponseEntity<AssetResponse> result = restTemplateLong.exchange(
+                    url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    AssetResponse.class
+            );
+            return result;
+        } catch (ResourceAccessException e) {
+            return null;
+        }
     }
 
     public ResponseEntity<AssetsResponse> getAllAssetsBonds() {

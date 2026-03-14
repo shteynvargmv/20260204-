@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.entservice;
 
 import com.example.demo.entity.CurrencySymbol;
 import com.example.demo.repository.CurrencyRepository;

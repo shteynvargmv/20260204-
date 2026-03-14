@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Token;
-import com.example.demo.service.TokenBlackListService;
+import com.example.demo.service.CacheService;
+import com.example.demo.service.entservice.TokenBlackListService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.dto.request.AuthRequest;
 import com.example.demo.entity.User;
 import com.example.demo.jwt.JwtUtil;
-import com.example.demo.service.UserService;
+import com.example.demo.service.entservice.UserService;
 import com.example.demo.dto.response.RegisterResponse;
 
 @RestController
@@ -35,6 +37,10 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    @Qualifier("simple")
+    private CacheService cacheService;
+
     @PostMapping("/login")
     @ResponseBody
     public Token authenticateAndGetToken(@RequestBody AuthRequest authRequest,
@@ -44,7 +50,7 @@ public class AuthController {
         try {
             userService.loadUserByUsername(authRequest.getUsername());
         } catch (UsernameNotFoundException e){
-            jwtUtil.delCookie(response);
+            jwtUtil.delTokenCookie(response);
             return new Token(e.getMessage());
         }
         try {
@@ -64,11 +70,11 @@ public class AuthController {
                 jwtUtil.setCookie(user,response);
                 return new Token(token,"Вы успешно зарегистрированы", user.getRole(), user.getUsername());
             } else {
-                jwtUtil.delCookie(response);
+                jwtUtil.delTokenCookie(response);
                 return new Token("Неверный логин или пароль");
             }
         } catch (AuthenticationException e){
-            jwtUtil.delCookie(response);
+            jwtUtil.delTokenCookie(response);
             return new Token("Неверный логин или пароль");
         }
     }
@@ -93,7 +99,9 @@ public class AuthController {
             if (user != null) {
                 if (tokenBlackListService.logout(user.getToken()) &&
                     userService.delRefreshToken(user)) {
-                    jwtUtil.delCookie(response);
+                    jwtUtil.delTokenCookie(response);
+                    jwtUtil.delFavCookie(request,response);
+                    cacheService.delAll();
                     return ResponseEntity.ok("Успешно выполнено");
                 }
             }

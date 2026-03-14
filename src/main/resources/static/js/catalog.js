@@ -1,4 +1,7 @@
 async function setFilter(element) {
+    let input = document.querySelector('#globalSearch');
+    let searchValue = input.value.toLowerCase();
+
     let checkedCheckboxes = document.querySelectorAll('[id^="sector_"]:checked');
     let selectedSectors = Array.from(checkedCheckboxes).map(checkbox => {
         return checkbox.value;
@@ -17,20 +20,22 @@ async function setFilter(element) {
     let selectedAllParameters = Array.from(checkedAllCheckboxes).map(checkbox => {
         return checkbox.value;
     });
-    if (type === 'share' || type == 'all') {
+    if (type === 'share' || type === 'all') {
         body = JSON.stringify({
             filter: { selectedSectors: selectedSectors,
                       selectedShareParameters: selectedShareParameters,
                       selectedBondParameters: null,
-                      selectedAllParameters: selectedAllParameters}
+                      selectedAllParameters: selectedAllParameters,
+                      searchValue: searchValue }
         })
     }
-    if (type === 'bond' || type == 'all') {
+    if (type === 'bond' || type === 'all') {
         body = JSON.stringify({
             filter: { selectedSectors: selectedSectors,
                 selectedShareParameters: null,
                 selectedBondParameters: selectedBondParameters,
-                selectedAllParameters: selectedAllParameters}
+                selectedAllParameters: selectedAllParameters,
+                searchValue: searchValue }
         })
     }
     if (type === 'all') {
@@ -38,7 +43,18 @@ async function setFilter(element) {
             filter: { selectedSectors: selectedSectors,
                 selectedShareParameters: selectedShareParameters,
                 selectedBondParameters: selectedBondParameters,
-                selectedAllParameters: selectedAllParameters }
+                selectedAllParameters: selectedAllParameters,
+                searchValue: searchValue }
+        })
+    }
+
+    if (type === 'currency') {
+        body = JSON.stringify({
+            filter: { selectedSectors: null,
+                selectedShareParameters: null,
+                selectedBondParameters: null,
+                selectedAllParameters: null,
+                searchValue: searchValue }
         })
     }
 

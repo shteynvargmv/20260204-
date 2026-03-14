@@ -1,10 +1,6 @@
 package com.example.demo.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.example.demo.dto.QuotationDto;
-
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class LastPriceDto {

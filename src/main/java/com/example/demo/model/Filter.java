@@ -8,6 +8,7 @@ public class Filter extends CacheDataBody {
     private List<String> selectedBondParameters;
     private List<String> selectedShareParameters;
     private List<String> selectedAllParameters;
+    private String searchValue;
 
     public void setSelectedSectors(List<String> selectedSectors) {
         this.selectedSectors = selectedSectors;
@@ -26,6 +27,7 @@ public class Filter extends CacheDataBody {
         this.selectedBondParameters = new ArrayList<>();
         this.selectedShareParameters = new ArrayList<>();
         this.selectedAllParameters = new ArrayList<>();
+        this.searchValue = "";
     }
 
     public List<String> getSelectedAllParameters() {
@@ -46,5 +48,13 @@ public class Filter extends CacheDataBody {
 
     public List<String> getSelectedBondParameters() {
         return selectedBondParameters;
+    }
+
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public void setSearchValue(String searchValue) {
+        this.searchValue = searchValue;
     }
 }

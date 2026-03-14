@@ -1,7 +1,5 @@
 package com.example.demo.dto.response;
 
-import com.example.demo.dto.InstrumentDto;
-
 import java.util.List;
 
 public class FavoriteResponse {
