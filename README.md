@@ -87,7 +87,6 @@ src/main/java/com/example/demo/
 ```
 GET /invest/catalog/share?page=1&sort=name_asc&sectors=it,financial
 Добавление в избранное
-text
 POST /invest/favorite/add/{uid}
 ```
 
