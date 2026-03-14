@@ -83,7 +83,7 @@ src/main/java/com/example/demo/
 *Хеширование паролей (BCrypt)*
 
 ## 📌 Примеры запросов
-Получение списка акций с фильтрацией
+Получение списка акций с сортировкой
 ```
 GET /invest/catalog/share?page=1&sort=name_asc
 ```
