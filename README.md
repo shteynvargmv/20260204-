@@ -85,7 +85,7 @@ src/main/java/com/example/demo/
 ## 📌 Примеры запросов
 Получение списка акций с фильтрацией
 ```
-GET /invest/catalog/share?page=1&sort=name_asc&sectors=it,financial
+GET /invest/catalog/share?page=1&sort=name_asc
 ```
 Добавление в избранное
 ```
