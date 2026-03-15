@@ -71,9 +71,9 @@ src/main/java/com/example/demo/
 ├── repository/ // Репозитории Spring Data  
 ├── service/    // Бизнес‑логика  
 ├── jwt/        // JWT‑фильтры и утилиты  
-├── utils/      // RestTemplate, маппинг, исключения  
+├── utils/      // RestTemplate, кэш  
 ├── dto/        // Data Transfer Objects  
-└── model/      // Models
+└── model/      // Модели
 ```
 ## 🔐 Безопасность
 *Аутентификация на основе JWT*
