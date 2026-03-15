@@ -87,9 +87,9 @@ src/main/java/com/example/demo/
 ```
 GET /invest/catalog/share?page=1&sort=name_asc
 ```
-Добавление в избранное
+Получение списка всех инвестиционных инструментов
 ```
-POST /invest/favorite-add/{uid}
+GET /invest/catalog/all
 ```
 
 ## 🧑‍🎓 Дипломная работа
