@@ -456,7 +456,7 @@ public class HomeController {
                                 user.getId(),
                                 instrument.getUid()));
             }
-            jwtUtil.setFavorites(instrument, response);
+            jwtUtil.setFavorites(favoriteService.findInstrumentsByUserId(user.getId()), response);
             model.addAttribute("instrument", instrument);
             model.addAttribute("showHeader", true);
             model.addAttribute("showFooter", true);

@@ -328,10 +328,8 @@ public class InstrumentService implements DBService {
                         (shareParameters == null || shareParameters.isEmpty()) &&
                         (allParameters == null || allParameters.isEmpty()) &&
                         (searchValue == null || searchValue.isEmpty())) {
-                    System.out.println("InstrumentService - findInstruments: " + searchValue);
                     return findByShareIsNotEmpty(Integer.parseInt(pageNum) - 1, sort);
                 } else {
-                    System.out.println("InstrumentService - findInstruments: " + searchValue);
                     return findShareBy(sectors,
                             Stream.concat(shareParameters.stream(),
                                             allParameters.stream())
